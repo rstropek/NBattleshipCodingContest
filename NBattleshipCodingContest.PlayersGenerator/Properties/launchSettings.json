@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NBattleshipCodingContest.PlayersGenerator": {
+      "commandName": "Executable",
+      "executablePath": "dotnet",
+      "commandLineArgs": "build --no-incremental",
+      "workingDirectory": "C:\\Code\\GitHub\\NBattleshipCodingContext"
+    }
+  }
+}

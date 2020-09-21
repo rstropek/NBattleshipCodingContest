@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+option csharp_namespace = "NBattleshipCodingContest.Protocol";
+
+service Manager {
+  rpc Connect (stream PlayerResponse) returns (stream GameRequest);
+}
+
+/*
+ * Player's shot sent from battle host to manager
+ */
+message Shot {
+	UUID gameId = 1;		// Game ID as received in shot request
+	string location = 2;	// Location where you want to shoot at
+}
+
+/*
+ * Message from battle host to battle manager
+ */
+message PlayerResponse {
+  oneof payload {		// For future extensibility
+	Shot shot = 1;		// Battle host sends shot of player to manager
+  }
+}
+
+/*
+ * String representation of a Guid (proto does not have Guid as a native type)
+ */
+message UUID {
+  string value = 1;
+}
+
+/*
+ * Battle manager requests a shot from battle host.
+ */
+message ShotRequest {
+	UUID gameId = 1;		// Unique identifier of the current game
+	int32 shooter = 2;		// Player index of shooter
+	int32 opponent = 3;		// Player index of opponent
+	bytes board = 4;		// Board content
+}
+
+/* 
+ * Note that values of the following enum has to be in sync
+ * with the C# enum NBattleshipCodingContest.Logic.SquareContent. 
+ */
+enum SquareContent {
+	WATER = 0;
+	SHIP = 1;
+	HIT_SHIP = 2;
+	UNKNOWN = 3;
+}
+
+/*
+ * Manager sends back shot result to battle host
+ */
+message ShotResult {
+	UUID gameId = 1;					// Game ID as received in shot request
+	SquareContent squareContent = 2;	// Square content after shot has been processed
+}
+
+/*
+ * Message from battle manager to battle host
+ */
+message GameRequest {
+  oneof payload {
+	ShotRequest shotRequest = 2;	// Battle host requests a shot from a player
+	ShotResult shotResult = 3;		// Battle host sends shot result to a player who placed a shot
+  }
+}

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+	Discuss:
+	* Target Framework Monikers for various .NET versions (https://docs.microsoft.com/en-us/dotnet/standard/frameworks)
+	* When to use which version of .NET Standard?
+	* What would you use in this project?
+	* Recap: What are nullable reference types?
+	* What is the analysis level (https://devblogs.microsoft.com/dotnet/automatically-find-latent-bugs-in-your-code-with-net-5/)?
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<AnalysisLevel>preview</AnalysisLevel>
+	</PropertyGroup>
+
+</Project>

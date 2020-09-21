@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<AnalysisLevel>preview</AnalysisLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="manager.proto" />
+	  <Protobuf Include="manager.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\NBattleshipCodingContest.Logic\NBattleshipCodingContest.Logic.csproj" />
+	  <ProjectReference Include="..\NBattleshipCodingContest.Players\NBattleshipCodingContest.Players.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.13.0" />
+		<PackageReference Include="Grpc" Version="2.31.0" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.31.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.31.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0-rc.1.20451.14" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0-rc.1.20451.14" />
+	</ItemGroup>
+</Project>
