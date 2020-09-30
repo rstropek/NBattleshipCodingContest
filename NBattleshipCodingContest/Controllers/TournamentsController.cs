@@ -1,14 +1,16 @@
-﻿namespace NBattleshipCodingContest.Manager
+﻿namespace NBattleshipCodingContest.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using NBattleshipCodingContest.Logic;
     using NBattleshipCodingContest.Players;
     using NBattleshipCodingContest.Protocol;
+
+    public record Players(int Player1Index, int Player2Index);
 
     [Route("api/[controller]")]
     [ApiController]
@@ -16,15 +18,18 @@
     {
         private readonly IEnumerable<PlayerInfo> players;
         private readonly IBattleHostConnection battleHostConnection;
+        private readonly ILogger<TournamentsController> logger;
 
-        public TournamentsController(PlayerInfo[] players, IBattleHostConnection battleHostConnection)
+        public TournamentsController(PlayerInfo[] players, IBattleHostConnection battleHostConnection,
+            ILogger<TournamentsController> logger)
         {
             this.players = players;
             this.battleHostConnection = battleHostConnection;
+            this.logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Start()
+        public async Task<IActionResult> Start([FromBody] Players playerIndexes)
         {
             if (players.Count() < 2)
             {
@@ -34,6 +39,18 @@
                     Status = StatusCodes.Status400BadRequest,
                     Title = "Too few players",
                     Detail = "There have to be at least two players in order to start a tournament"
+                });
+            }
+
+            if (playerIndexes.Player1Index < 0 || playerIndexes.Player1Index >= players.Count() ||
+                playerIndexes.Player2Index < 0 || playerIndexes.Player2Index >= players.Count())
+            {
+                return BadRequest(new ProblemDetails
+                {
+                    Type = "Invalid index",
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Index out of bounds",
+                    Detail = "Player index is out of bounds"
                 });
             }
 
@@ -48,22 +65,14 @@
                 });
             }
 
-            var (x, y) = Console.GetCursorPosition();
-
-            battleHostConnection.StartGame(0, 1);
+            battleHostConnection.StartGame(playerIndexes.Player1Index, playerIndexes.Player2Index);
             while (battleHostConnection.Game != null && battleHostConnection.Game.GetWinner(BattleshipBoard.Ships) == Winner.NoWinner)
             {
                 await battleHostConnection.Shoot(1);
                 await battleHostConnection.Shoot(2);
-
-                Console.SetCursorPosition(x, y);
-                Console.WriteLine(PlayerList.Players[battleHostConnection.Game.PlayerIndexes[0]].Name);
-                Console.WriteLine(battleHostConnection.Game.ShootingBoards[0]);
-                Console.WriteLine(PlayerList.Players[battleHostConnection.Game.PlayerIndexes[1]].Name);
-                Console.WriteLine(battleHostConnection.Game.ShootingBoards[1]);
             }
 
-            return Ok();
+            return Ok(battleHostConnection.Game!.Log);
         }
     }
 }

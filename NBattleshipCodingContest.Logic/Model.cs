@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace NBattleshipCodingContest.Logic
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SquareContent : byte
     {
         Water,

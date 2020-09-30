@@ -1,6 +1,7 @@
 ﻿namespace NBattleshipCodingContest.Logic.Tests
 {
     using System;
+    using System.Linq;
     using Xunit;
 
     public class GameTests
@@ -93,6 +94,18 @@
         public void GetWinner_NoWinner()
         {
             Assert.Equal(Winner.NoWinner, CreateGame().GetWinner(1));
+        }
+
+        [Fact]
+        public void Log()
+        {
+            var game = CreateGame();
+            game.Shoot(1, "A1");
+            game.Shoot(2, "A1");
+
+            Assert.Equal(2, game.Log.Count());
+            Assert.Equal(47, game.Log.First().Shooter);
+            Assert.Equal(new BoardIndex(), game.Log.First().Location);
         }
     }
 }

@@ -10,6 +10,8 @@
     using NBattleshipCodingContest.Players;
     using NBattleshipCodingContest.Protocol;
     using NBattleshipCodingContest.Logic;
+    using System.Diagnostics;
+    using Microsoft.Extensions.FileProviders;
 
     internal class ManagerMain
     {
@@ -18,7 +20,7 @@
         {
             var logger = Log.Logger.ForContext<ManagerMain>();
 
-            await Host.CreateDefaultBuilder()
+            var webTask = Host.CreateDefaultBuilder()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
@@ -45,6 +47,10 @@
                                 app.UseDeveloperExceptionPage();
                             }
 
+                            var fp = new ManifestEmbeddedFileProvider(typeof(ManagerMain).Assembly, "wwwroot");
+                            app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = fp });
+                            app.UseStaticFiles(new StaticFileOptions { FileProvider = fp });
+
                             app.UseOpenApi();
                             app.UseSwaggerUi3();
 
@@ -61,6 +67,19 @@
                 .UseConsoleLifetime()
                 .Build()
                 .RunAsync();
+
+            Process? bhp = null;
+            if (options.StartBattleHost)
+            {
+                bhp = Process.Start("dotnet", "run -- battlehost");
+            }
+
+            await webTask;
+
+            if (options.StartBattleHost && bhp != null)
+            {
+                bhp.WaitForExit();
+            }
         }
     }
 }

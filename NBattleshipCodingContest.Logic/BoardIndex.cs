@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Text.Json.Serialization;
 
     // Note readonly struct here. Read more at
     // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct#readonly-struct
@@ -13,6 +14,7 @@
     /// <para>Contains helper methods useful when implementing the battleship board as a continuous array.</para>
     /// <para>The implementation assumes the classic battleship game with a side length of 10.</para>
     /// </remarks>
+    [JsonConverter(typeof(BoardIndexJsonConverter))]
     public readonly struct BoardIndex : IEquatable<BoardIndex>
     {
         private readonly int index;

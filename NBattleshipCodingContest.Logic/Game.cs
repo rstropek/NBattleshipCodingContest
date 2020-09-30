@@ -1,6 +1,7 @@
 ﻿namespace NBattleshipCodingContest.Logic
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public enum Winner
@@ -10,6 +11,8 @@
         Player1 = 1,
         Player2 = 2
     }
+
+    public record GameLogRecord(int Shooter, BoardIndex Location, SquareContent ShotResult, string? ShooterName = null);
 
     // Note use of records here. Read more at
     // https://devblogs.microsoft.com/dotnet/welcome-to-c-9-0/#records
@@ -21,6 +24,8 @@
     /// </summary>
     public record Game(Guid GameId, int[] PlayerIndexes, IReadOnlyBoard[] Boards, BoardContent[] ShootingBoards)
     {
+        private readonly IList<GameLogRecord> log = new List<GameLogRecord>();
+
         private static void EnsureValidShooter(int shootingPlayer)
         {
             if (shootingPlayer is < 1 or > 2)
@@ -36,6 +41,11 @@
                 throw new InvalidOperationException("Board array(s) of wrong length");
             }
         }
+
+        /// <summary>
+        /// Gets the history of shots
+        /// </summary>
+        public IEnumerable<GameLogRecord> Log => log.ToArray();
 
         /// <summary>
         /// Given player shoots at a given index
@@ -59,6 +69,7 @@
             }
 
             ShootingBoards[shootingPlayer - 1][ix] = content;
+            log.Add(new(PlayerIndexes[shootingPlayer - 1], ix, content));
             return content;
         }
 

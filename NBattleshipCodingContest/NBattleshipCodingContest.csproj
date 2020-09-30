@@ -1,35 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <ItemGroup>
-    <ProjectReference Include="..\NBattleshipCodingContest.Logic\NBattleshipCodingContest.Logic.csproj" />
-    <ProjectReference Include="..\NBattleshipCodingContest.Players\NBattleshipCodingContest.Players.csproj" />
-    <ProjectReference Include="..\NBattleshipCodingContest.Protocol\NBattleshipCodingContest.Protocol.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\NBattleshipCodingContest.Logic\NBattleshipCodingContest.Logic.csproj" />
+		<ProjectReference Include="..\NBattleshipCodingContest.Players\NBattleshipCodingContest.Players.csproj" />
+		<ProjectReference Include="..\NBattleshipCodingContest.Protocol\NBattleshipCodingContest.Protocol.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.13.0" />
-    <PackageReference Include="Grpc" Version="2.31.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.31.0" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.31.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.31.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.8.1" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="Google.Protobuf" Version="3.13.0" />
+		<PackageReference Include="Grpc" Version="2.31.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.31.0" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.31.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.31.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.8" />
+		<PackageReference Include="NSwag.AspNetCore" Version="13.8.1" />
+		<PackageReference Include="Serilog" Version="2.10.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <AnalysisLevel>preview</AnalysisLevel>
-    <UserSecretsId>1bdc5834-582b-4fbc-aa99-9176d91a80fb</UserSecretsId>
-  </PropertyGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="wwwroot/*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="wwwroot\script.js" />
+	  <Content Remove="wwwroot\styles.css" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<AnalysisLevel>preview</AnalysisLevel>
+		<UserSecretsId>1bdc5834-582b-4fbc-aa99-9176d91a80fb</UserSecretsId>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+	</PropertyGroup>
 
 </Project>

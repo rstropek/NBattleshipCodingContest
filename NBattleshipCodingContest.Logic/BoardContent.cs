@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Manages the content of a battleship board.
@@ -16,6 +17,7 @@
     /// Methods reading data are thread-safe, methods writing data are not.
     /// </para>
     /// </remarks>
+    [JsonConverter(typeof(BoardContentJsonConverter))]
     public class BoardContent : IReadOnlyBoard
     {
         private readonly SquareContent[] boardContent;
