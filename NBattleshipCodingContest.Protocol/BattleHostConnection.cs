@@ -11,7 +11,8 @@
         Disconnected,
         Connected,
         GameRunning,
-        WaitingForShot
+        WaitingForShot,
+        WaitingForShotAck
     }
 
     /// <summary>
@@ -95,6 +96,7 @@
     public class BattleHostConnection : IBattleHostConnection
     {
         private int shooter = -1;
+        private BoardIndex? shotLocation;
         private readonly IGameFactory gameFactory;
         private readonly ILogger<BattleHostConnection> logger;
         private TaskCompletionSource? shootCompletion;
@@ -144,7 +146,12 @@
                     return BattleHostConnectionState.GameRunning;
                 }
 
-                return BattleHostConnectionState.WaitingForShot;
+                if (shotLocation == null)
+                {
+                    return BattleHostConnectionState.WaitingForShot;
+                }
+
+                return BattleHostConnectionState.WaitingForShotAck;
             }
         }
 
@@ -164,7 +171,11 @@
 
         private void StartShootingProcess(int shooter) => this.shooter = shooter;
 
-        private void EndShootingProcess() => shooter = -1;
+        private void EndShootingProcess()
+        {
+            shooter = -1;
+            shotLocation = null;
+        }
 
         /// <inheritdoc/>
         public Task Shoot(int shooter)
@@ -204,28 +215,43 @@
         /// <inheritdoc/>
         public async Task Handle(PlayerResponse response)
         {
-            if (State != BattleHostConnectionState.WaitingForShot || Game == null || shooter == -1 || shootCompletion == null)
+            if (Game == null || shooter == -1 || shootCompletion == null)
             {
                 throw new InvalidOperationException("Invalid state. Should never happen!");
             }
 
-            if (response.PayloadCase != PlayerResponse.PayloadOneofCase.Shot)
+            async Task ProcessShot(Shot shot)
             {
-                throw new InvalidOperationException("Invalid payload. Only shots are currently supported.");
+                var decodedResponse = ProtocolTranslator.DecodeShotResponse(shot);
+
+                if (decodedResponse.GameId != Game.GameId)
+                {
+                    throw new InvalidOperationException("Received shot for invalid game. Should never happen!");
+                }
+
+                var content = Game.Shoot(shooter, decodedResponse.Index);
+                shotLocation = decodedResponse.Index;
+                await Send(ProtocolTranslator.EncodeShotResult(new(Game.GameId, content)));
             }
 
-            var decodedResponse = ProtocolTranslator.DecodeShotResponse(response.Shot);
-
-            if (decodedResponse.GameId != Game.GameId)
+            void ProcessShotResultAck()
             {
-                throw new InvalidOperationException("Received shot for invalid game. Should never happen!");
+                EndShootingProcess();
+                shootCompletion.TrySetResult();
             }
 
-            var content = Game.Shoot(shooter, decodedResponse.Index);
-            await Send(ProtocolTranslator.EncodeShotResult(new(Game.GameId, content)));
-            EndShootingProcess();
-
-            shootCompletion.TrySetResult();
+            switch (response.PayloadCase)
+            {
+                case PlayerResponse.PayloadOneofCase.Shot:
+                    await ProcessShot(response.Shot);
+                    break;
+                case PlayerResponse.PayloadOneofCase.ShotResultAck:
+                    ProcessShotResultAck();
+                    break;
+                default:
+                    logger.LogInformation("Received unknown payload type {PayloadCase}", response.PayloadCase);
+                    break;
+            }
         }
 
         private async Task Send(GameRequest request)

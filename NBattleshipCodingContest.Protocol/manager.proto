@@ -15,11 +15,18 @@ message Shot {
 }
 
 /*
+ * Player acknowledges the shot result
+ */
+message ShotResultAck {
+}
+
+/*
  * Message from battle host to battle manager
  */
 message PlayerResponse {
-  oneof payload {		// For future extensibility
-	Shot shot = 1;		// Battle host sends shot of player to manager
+  oneof payload {		
+	Shot shot = 1;						// Battle host sends shot of player to manager
+	ShotResultAck shotResultAck = 2;	// Player acknowledges the shot result
   }
 }
 

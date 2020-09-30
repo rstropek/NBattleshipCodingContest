@@ -103,8 +103,12 @@
 
             // Simulate incoming shot result 
             await bhc.Handle(ProtocolTranslator.EncodeShotResponse(new(Guid.Empty, new BoardIndex(0, 0))));
-            Assert.True(shootTask.IsCompleted);
+            Assert.False(shootTask.IsCompleted);
             Assert.Equal(SquareContent.Water, bhc.Game!.ShootingBoards[0][new BoardIndex(0, 0)]);
+
+            // Simulate incoming shot ack
+            await bhc.Handle(ProtocolTranslator.EncodeShotResultAck());
+            Assert.True(shootTask.IsCompleted);
         }
     }
 }

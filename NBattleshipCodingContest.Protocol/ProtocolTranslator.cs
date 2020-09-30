@@ -77,5 +77,6 @@
 
         public static Logic.ShotResponse DecodeShotResponse(Shot response) =>
             new(DecodeGuid(response.GameId), DecodeLocation(response.Location));
-    }
+
+        public static PlayerResponse EncodeShotResultAck() => new() { ShotResultAck = new() }; }
 }

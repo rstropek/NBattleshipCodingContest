@@ -141,6 +141,7 @@
 
                 return shotCompletion.Task;
             });
+            await Send(ProtocolTranslator.EncodeShotResultAck());
         }
 
 
