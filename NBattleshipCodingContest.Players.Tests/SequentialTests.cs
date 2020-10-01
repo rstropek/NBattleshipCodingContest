@@ -32,7 +32,7 @@ namespace NBattleshipCodingContest.Players.Tests
 
         private string Shoot(BoardContent board, PlayerBase player)
         {
-            string? location = null;
+            BoardIndex? location = null;
             Task<SquareContent> shoot(string l)
             {
                 location = l;

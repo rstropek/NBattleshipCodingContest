@@ -15,7 +15,7 @@
         {
             // Return a random shot between A1 and J10
             var rand = new Random();
-            await shoot($"{(char)('A' + rand.Next(10))}{rand.Next(1, 11)}");
+            await shoot(new BoardIndex(rand.Next(10), rand.Next(10)));
         }
     }
 }

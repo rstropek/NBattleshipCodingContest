@@ -13,5 +13,9 @@ td.water {
 }
 
 td.hit {
-    background: red;
+    background: red !important;
+}
+
+td.ship {
+    background: lightgray;
 }

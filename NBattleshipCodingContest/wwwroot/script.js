@@ -4,6 +4,7 @@
     const start = document.getElementById('start');
     const p1table = document.getElementById('p1table');
     const p2table = document.getElementById('p2table');
+    const winner = document.getElementById('winner');
 
     function createOption(value, text) {
         var opt = document.createElement('option');
@@ -50,7 +51,7 @@
 
         const p1 = parseInt(player1Select.value);
         const p2 = parseInt(player2Select.value);
-        const gameResponse = await fetch('/api/tournaments', {
+        const gameResponse = await fetch('/api/games/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -60,12 +61,31 @@
         });
         const gameResult = await gameResponse.json();
 
-        for (let i = 0; i < gameResult.length; i++)  {
-            const colIx = gameResult[i].location.charCodeAt(0) - 'A'.charCodeAt(0);
-            const rowIx = parseInt(gameResult[i].location.substring(1)) - 1;
-            const pTable = gameResult[i].shooter === p1 ? p1table : p2table;
-            const td = pTable.childNodes[0].childNodes[rowIx].childNodes[colIx];
-            td.classList.add(gameResult[i].shotResult === 'Water' ? 'water' : 'hit');
+        for (let i = 0; i < 100; i++) {
+            if (gameResult.board1[i] === 'S') {
+                const colIx = i % 10;
+                const rowIx = Math.floor(i / 10);
+                const td = p2table.childNodes[0].childNodes[rowIx].childNodes[colIx];
+                td.classList.add('ship');
+            }
+
+            if (gameResult.board2[i] === 'S') {
+                const colIx = i % 10;
+                const rowIx = Math.floor(i / 10);
+                const td = p1table.childNodes[0].childNodes[rowIx].childNodes[colIx];
+                td.classList.add('ship');
+            }
         }
+
+        for (let i = 0; i < gameResult.log.length; i++)  {
+            const log = gameResult.log[i];
+            const colIx = log.location.charCodeAt(0) - 'A'.charCodeAt(0);
+            const rowIx = parseInt(log.location.substring(1)) - 1;
+            const pTable = log.shooter === p1 ? p1table : p2table;
+            const td = pTable.childNodes[0].childNodes[rowIx].childNodes[colIx];
+            td.classList.add(log.shotResult === 'Water' ? 'water' : 'hit');
+        }
+
+        winner.innerText = `The winner is ${players[gameResult.winner - 1]}`;
     };
 })();

@@ -46,23 +46,7 @@
         }
 
         /// <inheritdoc/>
-        public override void Write(Utf8JsonWriter writer, BoardContent value, JsonSerializerOptions _)
-        {
-            var result = string.Create(100, value, (buf, content) =>
-            {
-                for (var i = 0; i < 100; i++)
-                {
-                    buf[i] = content[new BoardIndex(i)] switch
-                    {
-                        SquareContent.Water => 'W',
-                        SquareContent.Ship => 'S',
-                        SquareContent.HitShip => 'H',
-                        SquareContent.Unknown => ' ',
-                        _ => throw new InvalidOperationException("Invalid square content, should never happen!")
-                    };
-                }
-            });
-            writer.WriteStringValue(result);
-        }
+        public override void Write(Utf8JsonWriter writer, BoardContent value, JsonSerializerOptions _) =>
+            writer.WriteStringValue((value as IReadOnlyBoard).ToShortString());
     }
 }

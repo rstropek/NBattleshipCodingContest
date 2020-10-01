@@ -12,16 +12,20 @@
 
     public record Players(int Player1Index, int Player2Index);
 
+    public record GameResult(string Board1, string Board2, Winner Winner, IEnumerable<GameLogRecord> Log);
+
     [Route("api/[controller]")]
     [ApiController]
-    public class TournamentsController : ControllerBase
+    public class GamesController : ControllerBase
     {
         private readonly IEnumerable<PlayerInfo> players;
         private readonly IBattleHostConnection battleHostConnection;
-        private readonly ILogger<TournamentsController> logger;
+#pragma warning disable IDE0052 // Remove unread private members
+        private readonly ILogger<GamesController> logger;
+#pragma warning restore IDE0052 // Remove unread private members
 
-        public TournamentsController(PlayerInfo[] players, IBattleHostConnection battleHostConnection,
-            ILogger<TournamentsController> logger)
+        public GamesController(PlayerInfo[] players, IBattleHostConnection battleHostConnection,
+            ILogger<GamesController> logger)
         {
             this.players = players;
             this.battleHostConnection = battleHostConnection;
@@ -29,6 +33,7 @@
         }
 
         [HttpPost]
+        [Route("start")]
         public async Task<IActionResult> Start([FromBody] Players playerIndexes)
         {
             if (players.Count() < 2)
@@ -72,7 +77,13 @@
                 await battleHostConnection.Shoot(2);
             }
 
-            return Ok(battleHostConnection.Game!.Log);
+            var game = battleHostConnection.Game!;
+            var result = new GameResult(
+                game.Boards[0].ToShortString(),
+                game.Boards[1].ToShortString(),
+                game.GetWinner(BattleshipBoard.Ships),
+                battleHostConnection.Game!.Log);
+            return Ok(result);
         }
     }
 }

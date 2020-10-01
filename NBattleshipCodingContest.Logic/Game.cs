@@ -12,7 +12,9 @@
         Player2 = 2
     }
 
+#pragma warning disable IDE0060 // Remove unused parameter
     public record GameLogRecord(int Shooter, BoardIndex Location, SquareContent ShotResult, string? ShooterName = null);
+#pragma warning restore IDE0060 // Remove unused parameter
 
     // Note use of records here. Read more at
     // https://devblogs.microsoft.com/dotnet/welcome-to-c-9-0/#records

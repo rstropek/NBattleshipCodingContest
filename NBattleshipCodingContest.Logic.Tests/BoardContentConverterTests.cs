@@ -6,7 +6,7 @@
 
     public class BoardContentConverterTests
     {
-        private BoardContent CreateBoard()
+        private static BoardContent CreateBoard()
         {
             var board = new BoardContent(SquareContent.Unknown);
             board["A1"] = SquareContent.Water;
