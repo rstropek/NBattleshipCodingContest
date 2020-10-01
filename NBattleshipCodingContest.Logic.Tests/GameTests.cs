@@ -78,7 +78,7 @@
             var shooterBoard1 = new BoardContent(SquareContent.Unknown);
             var game = CreateGame() with { ShootingBoards = new[] { shooterBoard1, new BoardContent(SquareContent.Unknown) } };
             shooterBoard1[new BoardIndex(0, 0)] = SquareContent.HitShip;
-            Assert.Equal(Winner.Player2, game.GetWinner(1));
+            Assert.Equal(Winner.Player1, game.GetWinner(1));
         }
 
         [Fact]
@@ -87,7 +87,7 @@
             var shooterBoard2 = new BoardContent(SquareContent.Unknown);
             var game = CreateGame() with { ShootingBoards = new[] { new BoardContent(SquareContent.Unknown), shooterBoard2 } };
             shooterBoard2[new BoardIndex(0, 0)] = SquareContent.HitShip;
-            Assert.Equal(Winner.Player1, game.GetWinner(1));
+            Assert.Equal(Winner.Player2, game.GetWinner(1));
         }
 
         [Fact]

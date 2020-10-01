@@ -106,12 +106,12 @@
 
             if (lostStates[0])
             {
-                return Winner.Player2;
+                return Winner.Player1;
             }
 
             if (lostStates[1])
             {
-                return Winner.Player1;
+                return Winner.Player2;
             }
 
             return Winner.NoWinner;

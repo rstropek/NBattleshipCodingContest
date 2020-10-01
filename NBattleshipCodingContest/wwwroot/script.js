@@ -1,18 +1,34 @@
 ﻿(async () => {
+    // Get HTML elements by ID
     const player1Select = document.getElementById('player1Select');
     const player2Select = document.getElementById('player2Select');
     const start = document.getElementById('start');
     const p1table = document.getElementById('p1table');
     const p2table = document.getElementById('p2table');
     const winner = document.getElementById('winner');
+    const next = document.getElementById('next');
+    const prev = document.getElementById('prev');
+    const first = document.getElementById('first');
+    const last = document.getElementById('last');
 
-    function createOption(value, text) {
+    next.onclick = onNext;
+    prev.onclick = onPrev;
+    first.onclick = onFirst;
+    last.onclick = onLast;
+
+    // Create an option element for a select
+    function createOption(value, text, selected) {
         var opt = document.createElement('option');
+        if (selected) {
+            opt.setAttribute('selected', '');
+        }
+
         opt.appendChild(document.createTextNode(text));
         opt.value = value;
         return opt;
     }
 
+    // Create a table with 10 x 10 squares
     function createBattleshipTable() {
         const tbody = document.createElement('tbody');
         for (var row = 0; row < 10; row++) {
@@ -28,15 +44,7 @@
         return tbody;
     }
 
-    const playersResponse = await fetch('/api/players');
-    const players = await playersResponse.json();
-    for (let i = 0; i < players.length; i++) {
-        player1Select.appendChild(createOption(i, players[i]));
-        player2Select.appendChild(createOption(i, players[i]));
-    }
-
-    start.disabled = false;
-    start.onclick = async () => {
+    async function runGame() {
         if (p1table.childNodes.length > 0) {
             p1table.removeChild(p1table.childNodes[0]);
         }
@@ -57,35 +65,95 @@
             body: JSON.stringify({
                 player1Index: p1,
                 player2Index: p2
-            }) 
+            })
         });
-        const gameResult = await gameResponse.json();
+        const result = await gameResponse.json();
 
-        for (let i = 0; i < 100; i++) {
-            if (gameResult.board1[i] === 'S') {
+        next.hidden = false;
+        prev.hidden = false;
+        first.hidden = false;
+        last.hidden = false;
+
+        return result;
+    }
+
+    let step;
+    let gameResult;
+
+    function onFirst() {
+        if (gameResult) {
+            step = 0;
+            processGameResult();
+        }
+    }
+
+    function onNext() {
+        if (gameResult && step < gameResult.log.length) {
+            step += 2;
+            processGameResult();
+        }
+    }
+
+    function onPrev() {
+        if (gameResult && step > 0) {
+            step -= 2;
+            processGameResult();
+        }
+    }
+
+    function onLast() {
+        if (gameResult) {
+            step = gameResult.log.length;
+            processGameResult();
+        }
+    }
+
+    function processGameResult() {
+        const ptables = [p1table, p2table];
+        const boards = [gameResult.board2, gameResult.board1];
+        for (let j = 0; j < 2; j++) {
+            for (let i = 0; i < 100; i++) {
                 const colIx = i % 10;
                 const rowIx = Math.floor(i / 10);
-                const td = p2table.childNodes[0].childNodes[rowIx].childNodes[colIx];
-                td.classList.add('ship');
-            }
+                const td = ptables[j].childNodes[0].childNodes[rowIx].childNodes[colIx];
+                td.className = '';
 
-            if (gameResult.board2[i] === 'S') {
-                const colIx = i % 10;
-                const rowIx = Math.floor(i / 10);
-                const td = p1table.childNodes[0].childNodes[rowIx].childNodes[colIx];
-                td.classList.add('ship');
+                if (boards[j][i] === 'S') {
+                    td.classList.add('ship');
+                }
+
+                if (boards[j][i] === 'S') {
+                    td.classList.add('ship');
+                }
             }
         }
 
-        for (let i = 0; i < gameResult.log.length; i++)  {
+        for (let i = 0; i < step; i++) {
             const log = gameResult.log[i];
             const colIx = log.location.charCodeAt(0) - 'A'.charCodeAt(0);
             const rowIx = parseInt(log.location.substring(1)) - 1;
-            const pTable = log.shooter === p1 ? p1table : p2table;
+            const pTable = i % 2 === 0 ? p1table : p2table;
             const td = pTable.childNodes[0].childNodes[rowIx].childNodes[colIx];
             td.classList.add(log.shotResult === 'Water' ? 'water' : 'hit');
         }
 
-        winner.innerText = `The winner is ${players[gameResult.winner - 1]}`;
+        winner.innerText = `The winner is player ${gameResult.winner}`;
+    }
+
+    // Get all players and fill selects with options
+    const playersResponse = await fetch('/api/players');
+    const players = await playersResponse.json();
+    for (let i = 0; i < players.length; i++) {
+        player1Select.appendChild(createOption(i, players[i], i === 0));
+        player2Select.appendChild(createOption(i, players[i], i === 1));
+    }
+
+    // Enable start button because now we are ready
+    start.disabled = false;
+
+    start.onclick = async () => {
+        gameResult = await runGame();
+        step = gameResult.log.length;
+        processGameResult();
     };
 })();
