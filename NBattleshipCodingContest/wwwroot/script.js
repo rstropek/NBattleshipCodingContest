@@ -137,7 +137,11 @@
             td.classList.add(log.shotResult === 'Water' ? 'water' : 'hit');
         }
 
-        winner.innerText = `The winner is player ${gameResult.winner}`;
+        if (gameResult.winner !== 0) {
+            winner.innerText = `The winner is player ${gameResult.winner}`;
+        } else {
+            winner.innerText = 'We have a draw, no winner';
+        }
     }
 
     // Get all players and fill selects with options

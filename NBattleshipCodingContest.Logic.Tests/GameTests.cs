@@ -73,6 +73,19 @@
         }
 
         [Fact]
+        public void GetWinner_Draw_Too_Many_moves()
+        {
+            var shootingBoards = new[] { new BoardContent(SquareContent.Unknown), new BoardContent(SquareContent.Unknown) };
+            var game = CreateGame() with { ShootingBoards = shootingBoards };
+            for (var i = 0; i < 200; i++)
+            {
+                game.Shoot(1, new BoardIndex(0));
+            }
+
+            Assert.Equal(Winner.Draw, game.GetWinner(1));
+        }
+
+        [Fact]
         public void GetWinner_Player1()
         {
             var shooterBoard1 = new BoardContent(SquareContent.Unknown);

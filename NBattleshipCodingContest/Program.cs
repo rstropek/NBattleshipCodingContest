@@ -3,7 +3,9 @@
     using CommandLine;
     using Microsoft.Extensions.Configuration;
     using NBattleshipCodingContest.BattleHost;
+    using NBattleshipCodingContest.ConsoleGame;
     using NBattleshipCodingContest.Manager;
+    using NBattleshipCodingContest.Players;
     using Serilog;
     using System;
     using System.IO;
@@ -33,11 +35,14 @@
 
             // Parse command line arguments and start services
             // depending on given verb.
-            Parser.Default.ParseArguments<ManagerOptions, BattleHostOptions, AboutOptions>(args)
+            Parser.Default.ParseArguments<ManagerOptions, BattleHostOptions, AboutOptions,
+                PlayerListOptions, ConsoleGameOptions>(args)
                 .MapResult(
                   (ManagerOptions options) => StartRunnerAndReturnExitCode(options),
                   (BattleHostOptions options) => StartBattleHostAndReturnExitCode(options),
                   (AboutOptions options) => ShowAboutAndReturnExitCode(options),
+                  (PlayerListOptions options) => ShowPlayerList(options),
+                  (ConsoleGameOptions options) => RunConsoleGame(options),
                   errors => 1);
         }
 
@@ -58,6 +63,18 @@
             return 0;
         }
 
+        private static int ShowPlayerList(PlayerListOptions _)
+        {
+            Console.WriteLine("Here is a list of players:\n");
+
+            for(var i = 0; i < PlayerList.Players.Length; i++)
+            {
+                Console.WriteLine($"{i}: {PlayerList.Players[i].Name}");
+            }
+
+            return 0;
+        }
+
         private static int StartBattleHostAndReturnExitCode(BattleHostOptions options)
         {
             var log = Log.Logger.ForContext<Program>();
@@ -75,6 +92,13 @@
             var manager = new ManagerMain();
             manager.StartManager(options).Wait();
             log.Information("Manager process ended.");
+            return 0;
+        }
+
+        private static int RunConsoleGame(ConsoleGameOptions options)
+        {
+            var consoleGameManger = new ConsoleGameMain();
+            consoleGameManger.StartConsoleGame(options).Wait();
             return 0;
         }
     }

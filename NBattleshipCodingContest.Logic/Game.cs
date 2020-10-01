@@ -99,7 +99,9 @@
         {
             EnsureValidBoards();
             var lostStates = ShootingBoards.Select(b => b.HasLost(ships)).ToArray();
-            if (lostStates[0] && lostStates[1])
+
+            // A game is considered a draw if more than 200 moves were made
+            if ((lostStates[0] && lostStates[1]) || Log.Count() >= 200)
             {
                 return Winner.Draw;
             }
