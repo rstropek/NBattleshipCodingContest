@@ -65,6 +65,10 @@
 
         [Fact] public void NextColumn_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(9).NextColumn());
 
+        [Fact] public void PrevColumn() => Assert.Equal(0, new BoardIndex(1).PreviousColumn());
+
+        [Fact] public void PrevColumn_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(0).PreviousColumn());
+
         [Fact] public void NextRow() => Assert.Equal(10, new BoardIndex(0).NextRow());
 
         [Fact] public void NextRow_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(90).NextRow());
@@ -77,8 +81,20 @@
 
         [Fact] public void TryNextColumn_Vertical_Invalid() => Assert.False(new BoardIndex(0, 9).TryNext(Direction.Vertical, out _));
 
+        [Fact] public void TryPreviousColumn_Horizontal() => Assert.True(new BoardIndex(1).TryPrevious(Direction.Horizontal, out var ix) && ix == 0);
+
+        [Fact] public void TryPreviousColumn_Vertical() => Assert.True(new BoardIndex(0, 1).TryPrevious(Direction.Vertical, out var ix) && ix == 0);
+
+        [Fact] public void TryPreviousColumn_Horizontal_Invalid() => Assert.False(new BoardIndex(0, 0).TryPrevious(Direction.Horizontal, out _));
+
+        [Fact] public void TryPreviousColumn_Vertical_Invalid() => Assert.False(new BoardIndex(9, 0).TryPrevious(Direction.Vertical, out _));
+
         [Fact] public void Next() => Assert.Equal(new BoardIndex(1), new BoardIndex(0).Next());
 
         [Fact] public void Next_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(99).Next());
+
+        [Fact] public void Previous() => Assert.Equal(new BoardIndex(0), new BoardIndex(1).Previous());
+
+        [Fact] public void Previous_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(0).Previous());
     }
 }

@@ -234,6 +234,32 @@
         }
 
         /// <summary>
+        /// Tries to retrieve a board index referencing the previous column or row.
+        /// </summary>
+        /// <param name="direction">Direction in which to go</param>
+        /// <param name="newIndex">New index. Value is undefined if method returns <c>false</c>.</param>
+        /// <returns>
+        /// <c>true</c> if movement is possible (i.e. not on outermost left or top column or row), otherwise <c>false</c>.
+        /// </returns>
+        public readonly bool TryPrevious(Direction direction, out BoardIndex newIndex)
+        {
+            if (direction == Direction.Horizontal && Column > 0)
+            {
+                newIndex = new BoardIndex(index - 1);
+                return true;
+            }
+
+            if (direction == Direction.Vertical && Row > 0)
+            {
+                newIndex = new BoardIndex(index - 10);
+                return true;
+            }
+
+            newIndex = new BoardIndex();
+            return false;
+        }
+
+        /// <summary>
         /// Returns a new board index referencing the next square (wraps to next row if necessary)
         /// </summary>
         /// <returns>
@@ -251,6 +277,23 @@
         }
 
         /// <summary>
+        /// Returns a new board index referencing the previous square (wraps to previous row if necessary)
+        /// </summary>
+        /// <returns>
+        /// New board index
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already on first square</exception>
+        public readonly BoardIndex Previous()
+        {
+            if (index > 0)
+            {
+                return new BoardIndex(index - 1);
+            }
+
+            throw new InvalidOperationException("Already on first square");
+        }
+
+        /// <summary>
         /// Returns a new board index referencing the next column (i.e. column to the right)
         /// </summary>
         /// <returns>
@@ -260,6 +303,15 @@
         public readonly BoardIndex NextColumn() => Column < 9 ? new BoardIndex(index + 1) : throw new InvalidOperationException("Already on last column");
 
         /// <summary>
+        /// Returns a new board index referencing the previous column (i.e. column to the left)
+        /// </summary>
+        /// <returns>
+        /// New board index
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already on first column</exception>
+        public readonly BoardIndex PreviousColumn() => Column > 0 ? new BoardIndex(index - 1) : throw new InvalidOperationException("Already on first column");
+
+        /// <summary>
         /// Returns a new board index referencing the next row (i.e. below)
         /// </summary>
         /// <returns>
@@ -267,16 +319,25 @@
         /// </returns>
         /// <exception cref="InvalidOperationException">Already on last row</exception>
         public readonly BoardIndex NextRow() => Row < 9 ? new BoardIndex(index + 10) : throw new InvalidOperationException("Already on last row");
+
+        /// <summary>
+        /// Returns a new board index referencing the previous row (i.e. up)
+        /// </summary>
+        /// <returns>
+        /// New board index
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already on first row</exception>
+        public readonly BoardIndex PreviousRow() => Row > 0 ? new BoardIndex(index - 10) : throw new InvalidOperationException("Already on first row");
         #endregion
 
         #region Properties
         /// <summary>
-        /// Gets the column
+        /// Gets the zero-based column
         /// </summary>
         public readonly int Column => index % 10;
 
         /// <summary>
-        /// Gets the row
+        /// Gets the zero-based row
         /// </summary>
         public readonly int Row => index / 10;
         #endregion
