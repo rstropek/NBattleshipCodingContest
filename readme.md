@@ -1,3 +1,5 @@
+![Build](https://github.com/rstropek/NBattleshipCodingContest/workflows/.NET%20Core/badge.svg)
+
 # Battleship Coding Contest
 
 ## Introduction
