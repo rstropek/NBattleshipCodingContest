@@ -13,13 +13,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.100-rc.1.20452.10'
+
     - name: Install dependencies
       run: dotnet restore -s https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json -s https://api.nuget.org/v3/index.json
+
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Debug --no-restore
+
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --no-build --configuration Debug --logger:"liquid.md;LogFileName=TestReport.md;"
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      if: ${{always()}}
+      with:
+        name: 'Test Run'
+        path: ${{github.workspace}}/*.Tests/TestResults/TestReport.md
