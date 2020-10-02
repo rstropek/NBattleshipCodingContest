@@ -32,5 +32,5 @@ jobs:
       uses: actions/upload-artifact@v2
       if: ${{always()}}
       with:
-        name: 'Test Run'
+        name: 'Test Results'
         path: ${{github.workspace}}/*.Tests/TestResults/TestReport.md
