@@ -168,6 +168,26 @@
         public static implicit operator string(BoardIndex value) => $"{(char)('A' + value.Column)}{value.Row + 1}";
 
         /// <summary>
+        /// Returns a new board index referencing the next square (wraps to next row if necessary)
+        /// </summary>
+        /// <param name="value">Value to increase</param>
+        /// <returns>
+        /// New board index
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already on last square</exception>
+        public static BoardIndex operator ++(BoardIndex value) => value.Next();
+
+        /// <summary>
+        /// Returns a new board index referencing the previous square (wraps to next row if necessary)
+        /// </summary>
+        /// <param name="value">Value to decrease</param>
+        /// <returns>
+        /// New board index
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already on first square</exception>
+        public static BoardIndex operator --(BoardIndex value) => value.Previous();
+
+        /// <summary>
         /// Converts a given string to a board index.
         /// </summary>
         /// <param name="location">Location string (e.g. A1, B5, J10) consisting of column (A..J) and row (1..10)</param>

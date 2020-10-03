@@ -91,9 +91,23 @@
 
         [Fact] public void Next() => Assert.Equal(new BoardIndex(1), new BoardIndex(0).Next());
 
+        [Fact]
+        public void Increase()
+        {
+            var ix = new BoardIndex();
+            Assert.Equal(new BoardIndex(1), ++ix);
+        }
+
         [Fact] public void Next_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(99).Next());
 
         [Fact] public void Previous() => Assert.Equal(new BoardIndex(0), new BoardIndex(1).Previous());
+
+        [Fact]
+        public void Decrease()
+        {
+            var ix = new BoardIndex(1);
+            Assert.Equal(new BoardIndex(0), --ix);
+        }
 
         [Fact] public void Previous_Invalid() => Assert.Throws<InvalidOperationException>(() => new BoardIndex(0).Previous());
     }

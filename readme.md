@@ -1,3 +1,5 @@
+![Build](https://github.com/rstropek/NBattleshipCodingContest/workflows/.NET%20Core/badge.svg)
+
 # Battleship Coding Contest
 
 ## Introduction
@@ -18,3 +20,7 @@ This project is a complete rewrite and works differently from the original *C# P
 * C# mini coding challenge in the [CoderDojo Linz](https://linz.coderdojo.net/) (Oct. 2020)
 
 Did you use this project in one of your workshops or courses? Please add it to the list above by sending a pull request.
+
+## Documentation
+
+See [project wiki](https://github.com/rstropek/NBattleshipCodingContest/wiki).
