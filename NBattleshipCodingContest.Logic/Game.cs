@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     public enum Winner
@@ -48,6 +49,76 @@
         /// Gets the history of shots
         /// </summary>
         public IEnumerable<GameLogRecord> Log => log.ToArray();
+
+        internal static bool IsShipSunken(IReadOnlyBoard board, BoardIndex ix)
+        {
+            Debug.Assert(board[ix] == SquareContent.HitShip);
+
+            // Go left and find first water
+            BoardIndex current = ix;
+            while (current.Column > 0 && board[current] != SquareContent.Water)
+            {
+                if (board[current] == SquareContent.Ship)
+                {
+                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
+                    return false;
+                }
+
+                current--;
+            }
+
+            BoardIndex leftStart = current.Column == 0 ? current : current.NextColumn();
+
+            // Go right and first first water
+            current = ix;
+            while (current.Column < 9 && board[current] != SquareContent.Water)
+            {
+                if (board[current] == SquareContent.Ship)
+                {
+                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
+                    return false;
+                }
+
+                current++;
+            }
+
+            BoardIndex rightEnd = current.Column == 9 ? current : current.PreviousColumn();
+
+            if (leftStart.Column < rightEnd.Column)
+            {
+                // We have found a horizontal ship and all its squares are hit -> it is sunken
+                return true;
+            }
+
+            // We have a vertical ship, go up
+            current = ix;
+            while (current.Row > 0 && board[current] != SquareContent.Water)
+            {
+                if (board[current] == SquareContent.Ship)
+                {
+                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
+                    return false;
+                }
+
+                current = current.PreviousRow();
+            }
+
+            // Go down
+            current = ix;
+            while (current.Row < 9 && board[current] != SquareContent.Water)
+            {
+                if (board[current] == SquareContent.Ship)
+                {
+                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
+                    return false;
+                }
+
+                current = current.NextRow();
+            }
+
+            // We have found a vertical ship and all its squares are hit -> it is sunken
+            return true;
+        }
 
         /// <summary>
         /// Given player shoots at a given index

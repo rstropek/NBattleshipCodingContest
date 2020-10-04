@@ -9,6 +9,7 @@ namespace NBattleshipCodingContest.Logic
         Water,
         Ship,
         HitShip,
+        SunkenShip,
         Unknown
     }
 

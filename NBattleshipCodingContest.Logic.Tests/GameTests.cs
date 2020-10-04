@@ -120,5 +120,40 @@
             Assert.Equal(47, game.Log.First().Shooter);
             Assert.Equal(new BoardIndex(), game.Log.First().Location);
         }
+
+        [Theory]
+        [InlineData("B2,C2,D2")]
+        [InlineData("B1,C1,D1")]
+        [InlineData("H1,I1,J1")]
+        [InlineData("B2,B3,B4")]
+        [InlineData("B1,B2,B3")]
+        [InlineData("B7,B8,B9")]
+        [InlineData("A1,B1")]
+        [InlineData("I10,J10")]
+        public void IsSunken(string shipLocation)
+        {
+            var board = new BoardContent(SquareContent.Water);
+            var locations = shipLocation.Split(',').ToList();
+            locations.ForEach(l => board[l] = SquareContent.HitShip);
+            Assert.All(locations, l => Game.IsShipSunken(board, l));
+        }
+
+        [Theory]
+        [InlineData("B2,C2,D2")]
+        [InlineData("B1,C1,D1")]
+        [InlineData("H1,I1,J1")]
+        [InlineData("B2,B3,B4")]
+        [InlineData("B1,B2,B3")]
+        [InlineData("B8,B9,B10")]
+        [InlineData("A1,B1")]
+        [InlineData("I10,J10")]
+        public void IsNotSunken(string shipLocation)
+        {
+            var board = new BoardContent(SquareContent.Water);
+            var locations = shipLocation.Split(',');
+            locations[..^1].ToList().ForEach(l => board[l] = SquareContent.HitShip);
+            board[locations[^1]] = SquareContent.Ship;
+            Assert.DoesNotContain(locations, l => Game.IsShipSunken(board, l));
+        }
     }
 }
