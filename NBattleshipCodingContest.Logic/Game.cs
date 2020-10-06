@@ -54,36 +54,42 @@
         {
             Debug.Assert(board[ix] == SquareContent.HitShip);
 
-            // Go left and find first water
-            BoardIndex current = ix;
-            while (current.Column > 0 && board[current] != SquareContent.Water)
+            bool FindShipEdge(ref BoardIndex current, Direction direction, bool prev)
             {
-                if (board[current] == SquareContent.Ship)
+                bool canMoveFurther;
+                do
                 {
-                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
-                    return false;
-                }
+                    if (board[current] == SquareContent.Ship)
+                    {
+                        // We found a square that is a ship that has not been hit -> ship cannot be sunken
+                        return false;
+                    }
 
-                current--;
+                    BoardIndex next;
+                    if (prev) canMoveFurther = current.TryPrevious(direction, out next);
+                    else canMoveFurther = current.TryNext(direction, out next);
+
+                    if (canMoveFurther)
+                    {
+                        current = next;
+                    }
+                }
+                while (canMoveFurther && board[current] != SquareContent.Water);
+
+                return true;
             }
 
-            BoardIndex leftStart = current.Column == 0 ? current : current.NextColumn();
+            // Go left and find first water
+            BoardIndex current = ix;
+            if (!FindShipEdge(ref current, Direction.Horizontal, true)) return false;
+            BoardIndex leftStart = board[current] != SquareContent.Water ? current : current.NextColumn();
 
             // Go right and first first water
             current = ix;
-            while (current.Column < 9 && board[current] != SquareContent.Water)
-            {
-                if (board[current] == SquareContent.Ship)
-                {
-                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
-                    return false;
-                }
+            if (!FindShipEdge(ref current, Direction.Horizontal, false)) return false;
+            BoardIndex rightEnd = board[current] != SquareContent.Water ? current : current.PreviousColumn();
 
-                current++;
-            }
-
-            BoardIndex rightEnd = current.Column == 9 ? current : current.PreviousColumn();
-
+            // Check whether we have a horizontal ship
             if (leftStart.Column < rightEnd.Column)
             {
                 // We have found a horizontal ship and all its squares are hit -> it is sunken
@@ -92,29 +98,11 @@
 
             // We have a vertical ship, go up
             current = ix;
-            while (current.Row > 0 && board[current] != SquareContent.Water)
-            {
-                if (board[current] == SquareContent.Ship)
-                {
-                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
-                    return false;
-                }
-
-                current = current.PreviousRow();
-            }
+            if (!FindShipEdge(ref current, Direction.Vertical, true)) return false;
 
             // Go down
             current = ix;
-            while (current.Row < 9 && board[current] != SquareContent.Water)
-            {
-                if (board[current] == SquareContent.Ship)
-                {
-                    // We found a square that is a ship that has not been hit -> ship cannot be sunken
-                    return false;
-                }
-
-                current = current.NextRow();
-            }
+            if (!FindShipEdge(ref current, Direction.Vertical, false)) return false;
 
             // We have found a vertical ship and all its squares are hit -> it is sunken
             return true;
@@ -135,10 +123,15 @@
             EnsureValidShooter(shootingPlayer);
             EnsureValidBoards();
 
-            var content = Boards[shootingPlayer % 2][ix];
+            var board = Boards[shootingPlayer % 2];
+            var content = board[ix];
             if (content == SquareContent.Ship)
             {
                 content = SquareContent.HitShip;
+                //if (IsShipSunken(board, ix))
+                //{
+                //    content = SquareContent.SunkenShip;
+                //}
             }
 
             ShootingBoards[shootingPlayer - 1][ix] = content;
