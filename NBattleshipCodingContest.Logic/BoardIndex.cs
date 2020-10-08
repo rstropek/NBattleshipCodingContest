@@ -27,7 +27,7 @@
 
             // Read more about assertation in C#
             // https://docs.microsoft.com/en-us/visualstudio/debugger/assertions-in-managed-code
-            Debug.Assert(col is >= 0 and <= 9 || row is >= 0 and <= 9);
+            Debug.Assert(col is >= 0 and <= 9 && row is >= 0 and <= 9);
 
             return row * 10 + col;
         }

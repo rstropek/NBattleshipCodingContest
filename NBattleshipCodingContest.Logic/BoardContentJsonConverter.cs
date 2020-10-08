@@ -47,6 +47,6 @@
 
         /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, BoardContent value, JsonSerializerOptions _) =>
-            writer.WriteStringValue((value as IReadOnlyBoard).ToShortString());
+            writer.WriteStringValue(value.ToShortString());
     }
 }
