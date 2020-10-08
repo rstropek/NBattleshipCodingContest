@@ -28,9 +28,12 @@
                 }
             });
 
-        internal static BoardIndexRange FindShip(this IReadOnlyBoard board, BoardIndex ix)
+        public static BoardIndexRange FindShipAtPosition(this IReadOnlyBoard board, BoardIndex ix)
         {
-            Debug.Assert(board[ix] is SquareContent.HitShip or SquareContent.Ship);
+            if (board[ix] is not SquareContent.Ship and not SquareContent.HitShip)
+            {
+                throw new ArgumentException("No ship on given position");
+            }
 
             BoardIndex FindShipEdge(BoardIndex current, Direction direction, bool prev)
             {
@@ -48,8 +51,8 @@
                 }
                 while (canMoveFurther && board[current] is not SquareContent.Water and not SquareContent.Unknown);
                 return board[current] is not SquareContent.Water and not SquareContent.Unknown ? current : 
-                    (prev ? (direction == Direction.Horizontal ? current.PreviousColumn() : current.PreviousRow())
-                          : (direction == Direction.Horizontal ? current.NextColumn() : current.NextRow()));
+                    (prev ? (direction == Direction.Horizontal ? current.NextColumn() : current.NextRow())
+                          : (direction == Direction.Horizontal ? current.PreviousColumn() : current.PreviousRow()));
             }
 
             // Go left and find first water
