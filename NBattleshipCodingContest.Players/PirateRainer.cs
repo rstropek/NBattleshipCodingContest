@@ -11,11 +11,11 @@
     {
         private bool DoesItMakeSenseToShootHere(IReadOnlyBoard board, BoardIndex ix)
         {
-            var isHitAbove = ix.Row > 0 && board[new BoardIndex(ix.Column, ix.Row - 1)] == SquareContent.HitShip;
+            var isHitAbove = ix.Row > 0 && board[new BoardIndex(ix.Column, ix.Row - 1)] is SquareContent.HitShip or SquareContent.SunkenShip;
             if (isHitAbove)
             {
-                var isHitAboveLeft = ix.Column > 0 && board[new BoardIndex(ix.Column - 1, ix.Row - 1)] == SquareContent.HitShip;
-                var isHitAboveRight = ix.Column < 9 && board[new BoardIndex(ix.Column + 1, ix.Row - 1)] == SquareContent.HitShip;
+                var isHitAboveLeft = ix.Column > 0 && board[new BoardIndex(ix.Column - 1, ix.Row - 1)] is SquareContent.HitShip or SquareContent.SunkenShip;
+                var isHitAboveRight = ix.Column < 9 && board[new BoardIndex(ix.Column + 1, ix.Row - 1)] is SquareContent.HitShip or SquareContent.SunkenShip;
                 if (isHitAboveLeft || isHitAboveRight)
                 {
                     return false;
