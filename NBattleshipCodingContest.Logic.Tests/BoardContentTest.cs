@@ -47,13 +47,15 @@
             bc[new BoardIndex(0, 0)] = SquareContent.Ship;
             bc[new BoardIndex(1, 0)] = SquareContent.HitShip;
             bc[new BoardIndex(2, 0)] = SquareContent.Water;
+            bc[new BoardIndex(3, 0)] = SquareContent.SunkenShip;
 
             var output = bc.ToString();
             Assert.Equal((1 + 10 + 9 + 1) * (1 + 10 * 3 + 1), output.Length);
             Assert.Equal(2, output.Count(c => c == '█'));
             Assert.Equal(2, output.Count(c => c == 'X'));
+            Assert.Equal(2, output.Count(c => c == 'x'));
             Assert.Equal(2, output.Count(c => c == '~'));
-            Assert.Equal(97 * 2, output.Count(c => c == ' '));
+            Assert.Equal(96 * 2, output.Count(c => c == ' '));
         }
 
         [Fact]
@@ -61,7 +63,8 @@
         {
             var board = new BoardContent();
             board[0] = SquareContent.HitShip;
-            Assert.True(board.HasLost(1));
+            board[1] = SquareContent.SunkenShip;
+            Assert.True(board.HasLost(2));
         }
     }
 }

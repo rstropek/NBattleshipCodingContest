@@ -29,7 +29,7 @@
         public void Shoot_Ship()
         {
             var board = new BoardContent(SquareContent.Water);
-            board[new BoardIndex(0, 0)] = SquareContent.Ship;
+            board[0] = board[1] = SquareContent.Ship;
             var shooterBoard = new BoardContent(SquareContent.Unknown);
 
             var game = CreateGame() with
@@ -40,6 +40,26 @@
 
             Assert.Equal(SquareContent.HitShip, game.Shoot(2, "A1"));
             Assert.Equal(SquareContent.HitShip, shooterBoard[new BoardIndex(0, 0)]);
+        }
+
+        [Fact]
+        public void Sink_Ship()
+        {
+            var board = new BoardContent(SquareContent.Water);
+            board[0] = board[1] = SquareContent.Ship;
+            var shooterBoard = new BoardContent(SquareContent.Unknown);
+
+            var game = CreateGame() with
+            {
+                Boards = new[] { board, new BoardContent(SquareContent.Water) },
+                ShootingBoards = new[] { new BoardContent(SquareContent.Unknown), shooterBoard }
+            };
+
+            Assert.Equal(SquareContent.Water, game.Shoot(2, "C1"));
+            Assert.Equal(SquareContent.HitShip, game.Shoot(2, "A1"));
+            Assert.Equal(SquareContent.SunkenShip, game.Shoot(2, "B1"));
+            Assert.Equal(SquareContent.SunkenShip, shooterBoard[new BoardIndex(0)]);
+            Assert.Equal(SquareContent.SunkenShip, shooterBoard[new BoardIndex(1)]);
         }
 
         [Fact]
@@ -120,88 +140,6 @@
             Assert.Equal(2, game.Log.Count());
             Assert.Equal(47, game.Log.First().Shooter);
             Assert.Equal(new BoardIndex(), game.Log.First().Location);
-        }
-
-        [Fact]
-        public void IsSunkenHorizontal()
-        {
-            for (var col = 0; col < 7; col++)
-            {
-                for (var row = 0; row < 10; row++)
-                {
-                    var board = new BoardContent(SquareContent.Water);
-                    var locations = new List<BoardIndex>
-                    {
-                        new BoardIndex(col, row),
-                        new BoardIndex(col + 1, row),
-                        new BoardIndex(col + 2, row),
-                    };
-                    locations.ForEach(l => board[l] = SquareContent.HitShip);
-                    Assert.All(locations, l => Game.IsShipSunken(board, l));
-                }
-            }
-        }
-
-        [Fact]
-        public void IsSunkenVertical()
-        {
-            for (var col = 0; col < 10; col++)
-            {
-                for (var row = 0; row < 7; row++)
-                {
-                    var board = new BoardContent(SquareContent.Water);
-                    var locations = new List<BoardIndex>
-                    {
-                        new BoardIndex(col, row),
-                        new BoardIndex(col, row + 1),
-                        new BoardIndex(col, row + 2),
-                    };
-                    locations.ForEach(l => board[l] = SquareContent.HitShip);
-                    Assert.All(locations, l => Game.IsShipSunken(board, l));
-                }
-            }
-        }
-
-        [Fact]
-        public void IsNotSunkenHorizontal()
-        {
-            for (var col = 0; col < 7; col++)
-            {
-                for (var row = 0; row < 10; row++)
-                {
-                    var board = new BoardContent(SquareContent.Water);
-                    var locations = new BoardIndex[]
-                    {
-                        new BoardIndex(col, row),
-                        new BoardIndex(col + 1, row),
-                        new BoardIndex(col + 2, row),
-                    };
-                    locations[..^1].ToList().ForEach(l => board[l] = SquareContent.HitShip);
-                    board[locations[^1]] = SquareContent.Ship;
-                    Assert.DoesNotContain(locations[..^1], l => Game.IsShipSunken(board, l));
-                }
-            }
-        }
-
-        [Fact]
-        public void IsNotSunkenVertical()
-        {
-            for (var col = 0; col < 10; col++)
-            {
-                for (var row = 0; row < 7; row++)
-                {
-                    var board = new BoardContent(SquareContent.Water);
-                    var locations = new BoardIndex[]
-                    {
-                        new BoardIndex(col, row),
-                        new BoardIndex(col, row + 1),
-                        new BoardIndex(col, row + 2),
-                    };
-                    locations[..^1].ToList().ForEach(l => board[l] = SquareContent.HitShip);
-                    board[locations[^1]] = SquareContent.Ship;
-                    Assert.DoesNotContain(locations[..^1], l => Game.IsShipSunken(board, l));
-                }
-            }
         }
     }
 }

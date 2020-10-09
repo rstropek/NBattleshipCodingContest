@@ -1,7 +1,13 @@
 ﻿namespace NBattleshipCodingContest.Logic
 {
     using System;
-    using System.Diagnostics;
+
+    public enum ShipFindingResult
+    {
+        NoShip,
+        CompleteShip,
+        PartialShip
+    }
 
     public static class ReadOnlyBoardExtensions
     {
@@ -22,20 +28,23 @@
                         SquareContent.Water => 'W',
                         SquareContent.Ship => 'S',
                         SquareContent.HitShip => 'H',
+                        SquareContent.SunkenShip => 'X',
                         SquareContent.Unknown => ' ',
                         _ => throw new InvalidOperationException("Invalid square content, should never happen!")
                     };
                 }
             });
 
-        public static BoardIndexRange FindShipAtPosition(this IReadOnlyBoard board, BoardIndex ix)
+        public static ShipFindingResult TryFindShip(this IReadOnlyBoard board, BoardIndex ix, out BoardIndexRange shipRange)
         {
-            if (board[ix] is not SquareContent.Ship and not SquareContent.HitShip)
+            if (board[ix] is not SquareContent.HitShip and not SquareContent.Ship)
             {
-                throw new ArgumentException("No ship on given position");
+                // No ship at specified index
+                shipRange = new BoardIndexRange();
+                return ShipFindingResult.NoShip;
             }
 
-            BoardIndex FindShipEdge(BoardIndex current, Direction direction, bool prev)
+            (BoardIndex ix, bool complete) FindShipEdge(BoardIndex current, Direction direction, bool prev)
             {
                 bool canMoveFurther;
                 do
@@ -50,24 +59,40 @@
                     }
                 }
                 while (canMoveFurther && board[current] is not SquareContent.Water and not SquareContent.Unknown);
-                return board[current] is not SquareContent.Water and not SquareContent.Unknown ? current : 
-                    (prev ? (direction == Direction.Horizontal ? current.NextColumn() : current.NextRow())
-                          : (direction == Direction.Horizontal ? current.PreviousColumn() : current.PreviousRow()));
+
+                var complete = board[current] is not SquareContent.Unknown;
+                if (board[current] is not SquareContent.Water and not SquareContent.Unknown)
+                {
+                    return (current, complete);
+                }
+
+                if (!prev)
+                {
+                    return (direction == Direction.Horizontal ? current.PreviousColumn() : current.PreviousRow(), complete);
+                }
+
+                return (direction == Direction.Horizontal ? current.NextColumn() : current.NextRow(), complete);
+            }
+
+            bool TryDirection(Direction direction, out (BoardIndexRange range, ShipFindingResult complete) result)
+            {
+                var (beginningIx, beginningComplete) = FindShipEdge(ix, direction, true);
+                var (endIx, endComplete) = FindShipEdge(ix, direction, false);
+                result = (new BoardIndexRange(beginningIx, endIx), 
+                    beginningComplete && endComplete ? ShipFindingResult.CompleteShip : ShipFindingResult.PartialShip);
+                return result.range.Length > 1;
             }
 
             // Go left and find first water
-            var horizontal = new BoardIndexRange(
-                FindShipEdge(ix, Direction.Horizontal, true),
-                FindShipEdge(ix, Direction.Horizontal, false));
-            if (horizontal.Length > 1)
+            if (TryDirection(Direction.Horizontal, out var resultHorizontal))
             {
-                return horizontal;
+                shipRange = resultHorizontal.range;
+                return resultHorizontal.complete;
             }
 
-            return new BoardIndexRange(
-                FindShipEdge(ix, Direction.Vertical, true),
-                FindShipEdge(ix, Direction.Vertical, false));
+            _ = TryDirection(Direction.Vertical, out var resultVertical);
+            shipRange = resultVertical.range;
+            return resultVertical.complete;
         }
-
     }
 }

@@ -50,64 +50,6 @@
         /// </summary>
         public IEnumerable<GameLogRecord> Log => log.ToArray();
 
-        internal static bool IsShipSunken(IReadOnlyBoard board, BoardIndex ix)
-        {
-            Debug.Assert(board[ix] == SquareContent.HitShip);
-
-            bool FindShipEdge(ref BoardIndex current, Direction direction, bool prev)
-            {
-                bool canMoveFurther;
-                do
-                {
-                    if (board[current] == SquareContent.Ship)
-                    {
-                        // We found a square that is a ship that has not been hit -> ship cannot be sunken
-                        return false;
-                    }
-
-                    BoardIndex next;
-                    if (prev) canMoveFurther = current.TryPrevious(direction, out next);
-                    else canMoveFurther = current.TryNext(direction, out next);
-
-                    if (canMoveFurther)
-                    {
-                        current = next;
-                    }
-                }
-                while (canMoveFurther && board[current] != SquareContent.Water);
-
-                return true;
-            }
-
-            // Go left and find first water
-            BoardIndex current = ix;
-            if (!FindShipEdge(ref current, Direction.Horizontal, true)) return false;
-            BoardIndex leftStart = board[current] != SquareContent.Water ? current : current.NextColumn();
-
-            // Go right and first first water
-            current = ix;
-            if (!FindShipEdge(ref current, Direction.Horizontal, false)) return false;
-            BoardIndex rightEnd = board[current] != SquareContent.Water ? current : current.PreviousColumn();
-
-            // Check whether we have a horizontal ship
-            if (leftStart.Column < rightEnd.Column)
-            {
-                // We have found a horizontal ship and all its squares are hit -> it is sunken
-                return true;
-            }
-
-            // We have a vertical ship, go up
-            current = ix;
-            if (!FindShipEdge(ref current, Direction.Vertical, true)) return false;
-
-            // Go down
-            current = ix;
-            if (!FindShipEdge(ref current, Direction.Vertical, false)) return false;
-
-            // We have found a vertical ship and all its squares are hit -> it is sunken
-            return true;
-        }
-
         /// <summary>
         /// Given player shoots at a given index
         /// </summary>
@@ -124,17 +66,28 @@
             EnsureValidBoards();
 
             var board = Boards[shootingPlayer % 2];
+            var shootingBoard = ShootingBoards[shootingPlayer - 1];
             var content = board[ix];
+            shootingBoard[ix] = content;
             if (content == SquareContent.Ship)
             {
-                content = SquareContent.HitShip;
-                //if (IsShipSunken(board, ix))
-                //{
-                //    content = SquareContent.SunkenShip;
-                //}
+                // We have a hit
+                content = shootingBoard[ix] = SquareContent.HitShip;
+
+                // Check whether the hit sank the ship
+                var shipResult = board.TryFindShip(ix, out var shipRange);
+                if (shipResult == ShipFindingResult.CompleteShip
+                    && shipRange.All(ix => shootingBoard[ix] == SquareContent.HitShip))
+                {
+                    // The hit sank the ship -> change all ship quares to SunkenShip
+                    content = SquareContent.SunkenShip;
+                    foreach(var shipIx in shipRange)
+                    {
+                        shootingBoard[shipIx] = SquareContent.SunkenShip;
+                    }
+                }
             }
 
-            ShootingBoards[shootingPlayer - 1][ix] = content;
             log.Add(new(PlayerIndexes[shootingPlayer - 1], ix, content));
             return content;
         }
