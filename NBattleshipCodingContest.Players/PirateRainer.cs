@@ -9,7 +9,7 @@
     /// </summary>
     public class PirateRainer : PlayerBase
     {
-        private bool DoesItMakeSenseToShootHere(IReadOnlyBoard board, BoardIndex ix)
+        private static bool DoesItMakeSenseToShootHere(IReadOnlyBoard board, BoardIndex ix)
         {
             var isHitAbove = ix.Row > 0 && board[new BoardIndex(ix.Column, ix.Row - 1)] is SquareContent.HitShip or SquareContent.SunkenShip;
             if (isHitAbove)
