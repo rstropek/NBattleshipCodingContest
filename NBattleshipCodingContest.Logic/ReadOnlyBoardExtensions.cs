@@ -35,6 +35,19 @@
                 }
             });
 
+        /// <summary>
+        /// Find out whether there is a ship on a given location and return its boundaries
+        /// </summary>
+        /// <param name="board">Board on which to find the ship</param>
+        /// <param name="ix">Location to check</param>
+        /// <param name="shipRange">Boundaries of the found ship</param>
+        /// <returns>
+        /// The method returns <see cref="ShipFindingResult.NoShip"/> if there is no ship on the specified cell.
+        /// It returns <see cref="ShipFindingResult.PartialShip"/> if there is a ship on the specified cell, but it
+        /// cannot be said for sure how long it is (because of <see cref="SquareContent.Unknown"/> cells in front or
+        /// behind the ship). If a ship was found and the size of the ship could be determined, the function returns
+        /// <see cref="ShipFindingResult.CompleteShip"/>.
+        /// </returns>
         public static ShipFindingResult TryFindShip(this IReadOnlyBoard board, BoardIndex ix, out BoardIndexRange shipRange)
         {
             if (board[ix] is not SquareContent.HitShip and not SquareContent.Ship)
