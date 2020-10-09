@@ -10,7 +10,7 @@
   "profiles": {
     "NBattleshipCodingContest": {
       "commandName": "Project",
-      "commandLineArgs": "consolegame -p 0 -q 1",
+      "commandLineArgs": "manager -b",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

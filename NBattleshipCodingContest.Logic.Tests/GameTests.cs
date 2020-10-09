@@ -1,6 +1,7 @@
 ﻿namespace NBattleshipCodingContest.Logic.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Xunit;
 
@@ -28,7 +29,7 @@
         public void Shoot_Ship()
         {
             var board = new BoardContent(SquareContent.Water);
-            board[new BoardIndex(0, 0)] = SquareContent.Ship;
+            board[0] = board[1] = SquareContent.Ship;
             var shooterBoard = new BoardContent(SquareContent.Unknown);
 
             var game = CreateGame() with
@@ -39,6 +40,26 @@
 
             Assert.Equal(SquareContent.HitShip, game.Shoot(2, "A1"));
             Assert.Equal(SquareContent.HitShip, shooterBoard[new BoardIndex(0, 0)]);
+        }
+
+        [Fact]
+        public void Sink_Ship()
+        {
+            var board = new BoardContent(SquareContent.Water);
+            board[0] = board[1] = SquareContent.Ship;
+            var shooterBoard = new BoardContent(SquareContent.Unknown);
+
+            var game = CreateGame() with
+            {
+                Boards = new[] { board, new BoardContent(SquareContent.Water) },
+                ShootingBoards = new[] { new BoardContent(SquareContent.Unknown), shooterBoard }
+            };
+
+            Assert.Equal(SquareContent.Water, game.Shoot(2, "C1"));
+            Assert.Equal(SquareContent.HitShip, game.Shoot(2, "A1"));
+            Assert.Equal(SquareContent.SunkenShip, game.Shoot(2, "B1"));
+            Assert.Equal(SquareContent.SunkenShip, shooterBoard[new BoardIndex(0)]);
+            Assert.Equal(SquareContent.SunkenShip, shooterBoard[new BoardIndex(1)]);
         }
 
         [Fact]

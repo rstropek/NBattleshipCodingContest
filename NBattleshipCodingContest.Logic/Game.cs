@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     public enum Winner
@@ -64,13 +65,29 @@
             EnsureValidShooter(shootingPlayer);
             EnsureValidBoards();
 
-            var content = Boards[shootingPlayer % 2][ix];
+            var board = Boards[shootingPlayer % 2];
+            var shootingBoard = ShootingBoards[shootingPlayer - 1];
+            var content = board[ix];
+            shootingBoard[ix] = content;
             if (content == SquareContent.Ship)
             {
-                content = SquareContent.HitShip;
+                // We have a hit
+                content = shootingBoard[ix] = SquareContent.HitShip;
+
+                // Check whether the hit sank the ship
+                var shipResult = board.TryFindShip(ix, out var shipRange);
+                if (shipResult == ShipFindingResult.CompleteShip
+                    && shipRange.All(ix => shootingBoard[ix] == SquareContent.HitShip))
+                {
+                    // The hit sank the ship -> change all ship quares to SunkenShip
+                    content = SquareContent.SunkenShip;
+                    foreach(var shipIx in shipRange)
+                    {
+                        shootingBoard[shipIx] = SquareContent.SunkenShip;
+                    }
+                }
             }
 
-            ShootingBoards[shootingPlayer - 1][ix] = content;
             log.Add(new(PlayerIndexes[shootingPlayer - 1], ix, content));
             return content;
         }

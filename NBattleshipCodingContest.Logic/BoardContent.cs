@@ -113,7 +113,7 @@
 
         /// <inheritdoc />
         public bool HasLost(params int[] ships) => ships.Length > 0 
-            ? this.Count(s => s == SquareContent.HitShip) == ships.Sum() 
+            ? this.Count(s => s is SquareContent.HitShip or SquareContent.SunkenShip) == ships.Sum() 
             : throw new ArgumentException("You must pass in at least one ship", nameof(ships));
 
         #region String conversion
@@ -160,6 +160,10 @@
                         switch (boardContent[new BoardIndex(col, row)])
                         {
                             case SquareContent.HitShip:
+                                buf[0] = 'x';
+                                buf[1] = 'x';
+                                break;
+                            case SquareContent.SunkenShip:
                                 buf[0] = 'X';
                                 buf[1] = 'X';
                                 break;

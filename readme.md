@@ -21,6 +21,10 @@ This project is a complete rewrite and works differently from the original *C# P
 
 Did you use this project in one of your workshops or courses? Please add it to the list above by sending a pull request.
 
+## Note Source Generator
+
+To build the project, you currently need to add `https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json` as a NuGet package source. The reason for this is that the project uses Roslyn's new *C# Source Generators*. You need the package source for its current preview packages.
+
 ## Documentation
 
 See [project wiki](https://github.com/rstropek/NBattleshipCodingContest/wiki).
