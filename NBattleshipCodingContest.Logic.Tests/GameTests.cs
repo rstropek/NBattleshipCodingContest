@@ -55,7 +55,6 @@
                 ShootingBoards = new[] { new BoardContent(SquareContent.Unknown), shooterBoard }
             };
 
-            Assert.Equal(SquareContent.Water, game.Shoot(2, "C1"));
             Assert.Equal(SquareContent.HitShip, game.Shoot(2, "A1"));
             Assert.Equal(SquareContent.SunkenShip, game.Shoot(2, "B1"));
             Assert.Equal(SquareContent.SunkenShip, shooterBoard[new BoardIndex(0)]);
