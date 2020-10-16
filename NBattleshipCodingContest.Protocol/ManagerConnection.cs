@@ -122,6 +122,7 @@
 
             var shotRequest = ProtocolTranslator.DecodeShotRequest(request);
             var shooter = players[shotRequest.Shooter].Create();
+            shooter.LastShot = shotRequest.LastShot;
             await shooter.GetShot(shotRequest.GameId, players[shotRequest.Opponent].Name, shotRequest.BoardShooterView, loc =>
             {
                 if (PlayerResponseStream == null)

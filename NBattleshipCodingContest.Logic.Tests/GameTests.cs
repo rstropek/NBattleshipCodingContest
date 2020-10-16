@@ -140,5 +140,37 @@
             Assert.Equal(47, game.Log.First().Shooter);
             Assert.Equal(new BoardIndex(), game.Log.First().Location);
         }
+
+        [Fact]
+        public void LastShot()
+        {
+            var game = CreateGame();
+
+            var request = game.GetShotRequest(1);
+            Assert.Null(request.LastShot);
+            game.Shoot(1, "A1");
+            Assert.Equal("A1", game.GetLastShot(1));
+
+            request = game.GetShotRequest(2);
+            Assert.Null(request.LastShot);
+            game.Shoot(2, "A1");
+            Assert.Equal("A1", game.GetLastShot(2));
+
+            request = game.GetShotRequest(1);
+            Assert.NotNull(request.LastShot);
+            Assert.Equal("A1", request.LastShot!);
+            game.Shoot(1, "B1");
+            Assert.Equal("B1", game.GetLastShot(1));
+
+            request = game.GetShotRequest(2);
+            Assert.NotNull(request.LastShot);
+            Assert.Equal("A1", request.LastShot!);
+            game.Shoot(2, "B1");
+            Assert.Equal("B1", game.GetLastShot(2));
+
+            request = game.GetShotRequest(1);
+            Assert.NotNull(request.LastShot);
+            Assert.Equal("B1", request.LastShot!);
+        }
     }
 }

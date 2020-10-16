@@ -19,6 +19,14 @@
     public abstract class PlayerBase
     {
         /// <summary>
+        /// Gets or sets the last shot of the player
+        /// </summary>
+        /// <remarks>
+        /// If the player did not shoot before, <see cref="LastShot"/> is <c>null</c>.
+        /// </remarks>
+        public BoardIndex? LastShot { get; set; }
+
+        /// <summary>
         /// Gets the next shot from the player.
         /// </summary>
         /// <param name="gameId">Unique identifier of the current game</param>

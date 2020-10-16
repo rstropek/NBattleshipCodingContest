@@ -99,6 +99,8 @@
             Assert.False(shootTask.IsCompleted);
             Assert.NotNull(gameRequest);
             Assert.Equal(GameRequest.PayloadOneofCase.ShotRequest, gameRequest!.PayloadCase);
+            Assert.NotNull(gameRequest.ShotRequest);
+            Assert.Empty(gameRequest.ShotRequest.LastShot);
             Assert.Equal(SquareContent.Unknown, bhc.Game!.ShootingBoards[0][new BoardIndex(0, 0)]);
 
             // Simulate incoming shot result 
