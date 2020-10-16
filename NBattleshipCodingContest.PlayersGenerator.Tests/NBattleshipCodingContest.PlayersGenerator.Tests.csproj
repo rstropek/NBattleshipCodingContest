@@ -13,8 +13,6 @@
 		<PackageReference Include="LiquidTestReports.Markdown" Version="1.0.1" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
 		<PackageReference Include="Moq" Version="4.14.7" />
-		<PackageReference Include="System.Collections.Immutable" Version="5.0.0-rc.1.20451.14" />
-		<PackageReference Include="System.Reflection.Metadata" Version="5.0.0-rc.1.20451.14" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,7 +22,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0-4.20464.1" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0-4.final" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0" PrivateAssets="all" />
 	</ItemGroup>
 
