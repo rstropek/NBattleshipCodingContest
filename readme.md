@@ -17,13 +17,9 @@ The history of this projects goes back many years. At that time, a group of deve
 This project is a complete rewrite and works differently from the original *C# Pirates*. However, the basic idea of allowing people to write computer players for *Battleship* in C# has remained the same. Here is a list of workshops and courses in which it was used:
 
 * The first version of this project was created for a workshop at the German *BASTA* conference in 2020 ([presentation](https://slides.com/rainerstropek/battleship-workshop/fullscreen), [YouTube recording of workshop (German)](https://www.youtube.com/playlist?list=PLhGL9p3BWHwvEzTmbe5cUwR4oqQr9dl-8))
-* C# mini coding challenge in the [CoderDojo Linz](https://linz.coderdojo.net/) (Oct. 2020)
+* Multiple C# mini coding challenges in the [CoderDojo Linz](https://linz.coderdojo.net/) (Oct. 2020)
 
 Did you use this project in one of your workshops or courses? Please add it to the list above by sending a pull request.
-
-## Note Source Generator
-
-To build the project, you currently need to add `https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json` as a NuGet package source. The reason for this is that the project uses Roslyn's new *C# Source Generators*. You need the package source for its current preview packages.
 
 ## Documentation
 

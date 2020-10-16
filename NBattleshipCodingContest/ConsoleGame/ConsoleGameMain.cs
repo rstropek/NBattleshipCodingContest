@@ -2,6 +2,7 @@
 {
     using NBattleshipCodingContest.Logic;
     using NBattleshipCodingContest.Players;
+    using NBattleshipCodingContest.Protocol;
     using Serilog;
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -26,13 +27,22 @@
 
             var gf = new GameFactory(new RandomBoardFiller());
             var game = gf.Create(options.Player1Index, options.Player2Index);
-            var p1 = PlayerList.Players[options.Player1Index].Create();
-            var p2 = PlayerList.Players[options.Player2Index].Create();
             while (game.GetWinner(BattleshipBoard.Ships) == Winner.NoWinner)
             {
-                await p1.GetShot(game.GameId, PlayerList.Players[options.Player2Index].Name, game.ShootingBoards[0],
+                var p1 = PlayerList.Players[options.Player1Index].Create();
+                var shotRequest = ProtocolTranslator.DecodeShotRequest(ProtocolTranslator.EncodeShotRequest(
+                    new Logic.ShotRequest(game.GameId, options.Player1Index, options.Player2Index,
+                        game.ShootingBoards[0], game.GetLastShot(1))).ShotRequest);
+                p1.LastShot = shotRequest.LastShot;
+                await p1.GetShot(shotRequest.GameId, PlayerList.Players[shotRequest.Shooter].Name, shotRequest.BoardShooterView,
                     location => Task.FromResult(game.Shoot(1, location)));
-                await p2.GetShot(game.GameId, PlayerList.Players[options.Player1Index].Name, game.ShootingBoards[1],
+
+                var p2 = PlayerList.Players[options.Player2Index].Create();
+                shotRequest = ProtocolTranslator.DecodeShotRequest(ProtocolTranslator.EncodeShotRequest(
+                    new Logic.ShotRequest(game.GameId, options.Player2Index, options.Player1Index,
+                        game.ShootingBoards[1], game.GetLastShot(2))).ShotRequest);
+                p2.LastShot = shotRequest.LastShot;
+                await p2.GetShot(game.GameId, PlayerList.Players[shotRequest.Shooter].Name, shotRequest.BoardShooterView,
                     location => Task.FromResult(game.Shoot(2, location)));
             }
 

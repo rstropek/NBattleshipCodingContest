@@ -45,6 +45,7 @@ message ShotRequest {
 	int32 shooter = 2;		// Player index of shooter
 	int32 opponent = 3;		// Player index of opponent
 	bytes board = 4;		// Board content
+	string lastShot = 5;	// Last shot of the shooter. Empty if first shot.
 }
 
 /* 

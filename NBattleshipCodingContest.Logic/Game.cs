@@ -13,9 +13,7 @@
         Player2 = 2
     }
 
-#pragma warning disable IDE0060 // Remove unused parameter
     public record GameLogRecord(int Shooter, BoardIndex Location, SquareContent ShotResult, string? ShooterName = null);
-#pragma warning restore IDE0060 // Remove unused parameter
 
     // Note use of records here. Read more at
     // https://devblogs.microsoft.com/dotnet/welcome-to-c-9-0/#records
@@ -102,8 +100,16 @@
             EnsureValidShooter(shootingPlayer);
             EnsureValidBoards();
 
-            return new(GameId, PlayerIndexes[shootingPlayer - 1],
-                PlayerIndexes[shootingPlayer % 2], ShootingBoards[shootingPlayer - 1]);
+            return new(GameId, PlayerIndexes[shootingPlayer - 1], PlayerIndexes[shootingPlayer % 2], 
+                ShootingBoards[shootingPlayer - 1], GetLastShot(shootingPlayer));
+        }
+
+        public BoardIndex? GetLastShot(int player)
+        {
+            EnsureValidShooter(player);
+            EnsureValidBoards();
+
+            return log.LastOrDefault(l => l.Shooter == PlayerIndexes[player - 1])?.Location;
         }
 
         /// <summary>
