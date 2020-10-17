@@ -1,4 +1,4 @@
-﻿namespace NBattleshipCodingContest.BattleHost
+﻿namespace NBattleshipCodingContest.PlayerHost
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +12,12 @@
     using static NBattleshipCodingContest.Protocol.Manager;
     using NBattleshipCodingContest.Players;
 
-    internal class BattleHostMain
+    internal class PlayerHostMain
     {
         [SuppressMessage("Microsoft.Performance", "CA1822", Scope = "method", Justification = "Static method could not act as context for logging")]
-        public async Task StartBattleHost(BattleHostOptions options)
+        public async Task StartPlayerHost(PlayerHostOptions options)
         {
-            var logger = Log.Logger.ForContext<BattleHostMain>();
+            var logger = Log.Logger.ForContext<PlayerHostMain>();
 
             if (options.AllowUnencrypted)
             {
@@ -48,7 +48,7 @@
                     // Add all players
                     services.AddSingleton(PlayerList.Players);
                     services.AddSingleton<IManagerConnection, ManagerConnection>();
-                    services.AddHostedService<BattleHostService>();
+                    services.AddHostedService<PlayerHostService>();
                 })
                 .UseSerilog()
                 .UseConsoleLifetime()

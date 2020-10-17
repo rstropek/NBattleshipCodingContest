@@ -2,7 +2,7 @@
 {
     using CommandLine;
     using Microsoft.Extensions.Configuration;
-    using NBattleshipCodingContest.BattleHost;
+    using NBattleshipCodingContest.PlayerHost;
     using NBattleshipCodingContest.ConsoleGame;
     using NBattleshipCodingContest.Manager;
     using NBattleshipCodingContest.Players;
@@ -35,11 +35,11 @@
 
             // Parse command line arguments and start services
             // depending on given verb.
-            Parser.Default.ParseArguments<ManagerOptions, BattleHostOptions, AboutOptions,
+            Parser.Default.ParseArguments<ManagerOptions, PlayerHostOptions, AboutOptions,
                 PlayerListOptions, ConsoleGameOptions>(args)
                 .MapResult(
                   (ManagerOptions options) => StartRunnerAndReturnExitCode(options),
-                  (BattleHostOptions options) => StartBattleHostAndReturnExitCode(options),
+                  (PlayerHostOptions options) => StartPlayerHostAndReturnExitCode(options),
                   (AboutOptions options) => ShowAboutAndReturnExitCode(options),
                   (PlayerListOptions options) => ShowPlayerList(options),
                   (ConsoleGameOptions options) => RunConsoleGame(options),
@@ -75,12 +75,12 @@
             return 0;
         }
 
-        private static int StartBattleHostAndReturnExitCode(BattleHostOptions options)
+        private static int StartPlayerHostAndReturnExitCode(PlayerHostOptions options)
         {
             var log = Log.Logger.ForContext<Program>();
             log.Information("Starting battle host process...");
-            var host = new BattleHostMain();
-            host.StartBattleHost(options).Wait();
+            var host = new PlayerHostMain();
+            host.StartPlayerHost(options).Wait();
             log.Information("Battle host process ended.");
             return 0;
         }

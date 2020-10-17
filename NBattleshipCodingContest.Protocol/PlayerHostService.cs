@@ -7,15 +7,15 @@
     using System.Threading.Tasks;
     using static NBattleshipCodingContest.Protocol.Manager;
 
-    public class BattleHostService : IHostedService
+    public class PlayerHostService : IHostedService
     {
-        private readonly ILogger<BattleHostService> logger;
+        private readonly ILogger<PlayerHostService> logger;
         private readonly ManagerClient client;
         private readonly IManagerConnection connection;
         private readonly IHostApplicationLifetime appLifetime;
         private AsyncDuplexStreamingCall<PlayerResponse, GameRequest>? Connection;
 
-        public BattleHostService(ILogger<BattleHostService> logger, ManagerClient client, IManagerConnection connection,
+        public PlayerHostService(ILogger<PlayerHostService> logger, ManagerClient client, IManagerConnection connection,
             IHostApplicationLifetime appLifetime)
         {
             this.logger = logger;

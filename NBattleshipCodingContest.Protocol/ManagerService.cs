@@ -13,9 +13,9 @@
         private static readonly object BattleRunnerConnectedLockObject = new object();
         private readonly ILogger<ManagerService> logger;
         private readonly IHostApplicationLifetime appLifetime;
-        private readonly IBattleHostConnection connection;
+        private readonly IPlayerHostConnection connection;
 
-        public ManagerService(ILogger<ManagerService> logger, IHostApplicationLifetime appLifetime, IBattleHostConnection connection)
+        public ManagerService(ILogger<ManagerService> logger, IHostApplicationLifetime appLifetime, IPlayerHostConnection connection)
         {
             this.logger = logger;
             this.appLifetime = appLifetime;

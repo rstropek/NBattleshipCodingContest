@@ -6,7 +6,7 @@
     using System;
     using System.Threading.Tasks;
 
-    public enum BattleHostConnectionState
+    public enum PlayerHostConnectionState
     {
         Disconnected,
         Connected,
@@ -18,15 +18,15 @@
     /// <summary>
     /// Represents a connection of the manager to the battle host
     /// </summary>
-    public interface IBattleHostConnection
+    public interface IPlayerHostConnection
     {
         /// <summary>
         /// Connect to battle host
         /// </summary>
         /// <param name="stream">Stream used to send game requests to battle host</param>
         /// <remarks>
-        /// Switches <see cref="State"/> from <see cref="BattleHostConnectionState.Disconnected"/>
-        /// to <see cref="BattleHostConnectionState.Connected"/>.
+        /// Switches <see cref="State"/> from <see cref="PlayerHostConnectionState.Disconnected"/>
+        /// to <see cref="PlayerHostConnectionState.Connected"/>.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Already connected</exception>
         void Connect(IServerStreamWriter<GameRequest> stream);
@@ -34,7 +34,7 @@
         /// <summary>
         /// Current state of the connection
         /// </summary>
-        BattleHostConnectionState State { get; }
+        PlayerHostConnectionState State { get; }
 
         /// <summary>
         /// Indicates whether the connection is in a state where you can start a new game.
@@ -47,10 +47,10 @@
         /// <param name="player1Index">Index of player 1</param>
         /// <param name="player2Index">Index of player 2</param>
         /// <remarks>
-        /// Switches <see cref="State"/> from <see cref="BattleHostConnectionState.Connected"/>
-        /// to <see cref="BattleHostConnectionState.GameRunning"/>.
+        /// Switches <see cref="State"/> from <see cref="PlayerHostConnectionState.Connected"/>
+        /// to <see cref="PlayerHostConnectionState.GameRunning"/>.
         /// </remarks>
-        /// <exception cref="InvalidOperationException">Not in <see cref="BattleHostConnectionState.Connected"/> state</exception>
+        /// <exception cref="InvalidOperationException">Not in <see cref="PlayerHostConnectionState.Connected"/> state</exception>
         void StartGame(int player1Index, int player2Index);
 
         /// <summary>
@@ -63,8 +63,8 @@
         /// Gets the current game
         /// </summary>
         /// <remarks>
-        /// Is <c>null</c> if not in <see cref="BattleHostConnectionState.GameRunning"/>
-        /// or <see cref="BattleHostConnectionState.WaitingForShot"/> state.
+        /// Is <c>null</c> if not in <see cref="PlayerHostConnectionState.GameRunning"/>
+        /// or <see cref="PlayerHostConnectionState.WaitingForShot"/> state.
         /// </remarks>
         Game? Game { get; }
 
@@ -76,15 +76,15 @@
         /// The returned <see cref="Task"/> completes when the player has sent back a shot
         /// (<seealso cref="Handle(PlayerResponse)"/>) and the shot has been processed.
         /// </remarks>
-        /// <exception cref="InvalidOperationException">Not in <see cref="BattleHostConnectionState.GameRunning"/> state</exception>
+        /// <exception cref="InvalidOperationException">Not in <see cref="PlayerHostConnectionState.GameRunning"/> state</exception>
         Task Shoot(int shooter);
 
         /// <summary>
         /// Disconnects from battle host
         /// </summary>
         /// <remarks>
-        /// Switches <see cref="State"/> from <see cref="BattleHostConnectionState.Connected"/>
-        /// to <see cref="BattleHostConnectionState.Disconnected"/>.
+        /// Switches <see cref="State"/> from <see cref="PlayerHostConnectionState.Connected"/>
+        /// to <see cref="PlayerHostConnectionState.Disconnected"/>.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Already connected</exception>
         void Disconnect();
@@ -93,20 +93,20 @@
     /// <summary>
     /// Implements a connection of the manager to the battle host
     /// </summary>
-    public class BattleHostConnection : IBattleHostConnection
+    public class PlayerHostConnection : IPlayerHostConnection
     {
         private int shooter = -1;
         private BoardIndex? shotLocation;
         private readonly IGameFactory gameFactory;
-        private readonly ILogger<BattleHostConnection> logger;
+        private readonly ILogger<PlayerHostConnection> logger;
         private TaskCompletionSource? shootCompletion;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BattleHostConnection"/> type.
+        /// Initializes a new instance of the <see cref="PlayerHostConnection"/> type.
         /// </summary>
         /// <param name="gameFactory">Factory used to create games</param>
         /// <param name="logger">Logger</param>
-        public BattleHostConnection(IGameFactory gameFactory, ILogger<BattleHostConnection> logger)
+        public PlayerHostConnection(IGameFactory gameFactory, ILogger<PlayerHostConnection> logger)
         {
             this.gameFactory = gameFactory;
             this.logger = logger;
@@ -115,7 +115,7 @@
         /// <inheritdoc/>
         public void Connect(IServerStreamWriter<GameRequest> stream)
         {
-            if (State == BattleHostConnectionState.Connected)
+            if (State == PlayerHostConnectionState.Connected)
             {
                 throw new InvalidOperationException("Already connected. This should never happen!");
             }
@@ -127,36 +127,36 @@
         public Game? Game { get; private set; }
 
         /// <inheritdoc/>
-        public BattleHostConnectionState State
+        public PlayerHostConnectionState State
         {
             get
             {
                 if (GameRequestStream == null)
                 {
-                    return BattleHostConnectionState.Disconnected;
+                    return PlayerHostConnectionState.Disconnected;
                 }
 
                 if (Game == null)
                 {
-                    return BattleHostConnectionState.Connected;
+                    return PlayerHostConnectionState.Connected;
                 }
 
                 if (shooter == -1)
                 {
-                    return BattleHostConnectionState.GameRunning;
+                    return PlayerHostConnectionState.GameRunning;
                 }
 
                 if (shotLocation == null)
                 {
-                    return BattleHostConnectionState.WaitingForShot;
+                    return PlayerHostConnectionState.WaitingForShot;
                 }
 
-                return BattleHostConnectionState.WaitingForShotAck;
+                return PlayerHostConnectionState.WaitingForShotAck;
             }
         }
 
         /// <inheritdoc/>
-        public bool CanStartGame => State is BattleHostConnectionState.Connected or BattleHostConnectionState.GameRunning;
+        public bool CanStartGame => State is PlayerHostConnectionState.Connected or PlayerHostConnectionState.GameRunning;
 
         /// <inheritdoc/>
         public void StartGame(int player1Index, int player2Index)
@@ -180,7 +180,7 @@
         /// <inheritdoc/>
         public Task Shoot(int shooter)
         {
-            if (State != BattleHostConnectionState.GameRunning || Game == null)
+            if (State != PlayerHostConnectionState.GameRunning || Game == null)
             {
                 throw new InvalidOperationException("Wrong game state. Forgot to call StartGame?");
             }
@@ -256,7 +256,7 @@
 
         private async Task Send(GameRequest request)
         {
-            if (State == BattleHostConnectionState.Disconnected || GameRequestStream == null)
+            if (State == PlayerHostConnectionState.Disconnected || GameRequestStream == null)
             {
                 throw new InvalidOperationException("No battle host connected.");
             }

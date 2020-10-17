@@ -8,45 +8,45 @@
     using System.Threading.Tasks;
     using Xunit;
 
-    public class BattleHostConnectionTests
+    public class PlayerHostConnectionTests
     {
         [Fact]
         public void Connect()
         {
             var stream = Mock.Of<IServerStreamWriter<GameRequest>>();
-            var logger = Mock.Of<ILogger<BattleHostConnection>>();
+            var logger = Mock.Of<ILogger<PlayerHostConnection>>();
             var factory = Mock.Of<IGameFactory>();
 
-            var bhc = new BattleHostConnection(factory, logger);
+            var bhc = new PlayerHostConnection(factory, logger);
 
-            Assert.Equal(BattleHostConnectionState.Disconnected, bhc.State);
+            Assert.Equal(PlayerHostConnectionState.Disconnected, bhc.State);
             bhc.Connect(stream);
-            Assert.Equal(BattleHostConnectionState.Connected, bhc.State);
+            Assert.Equal(PlayerHostConnectionState.Connected, bhc.State);
         }
 
         [Fact]
         public void Disconnect()
         {
             var stream = Mock.Of<IServerStreamWriter<GameRequest>>();
-            var logger = Mock.Of<ILogger<BattleHostConnection>>();
+            var logger = Mock.Of<ILogger<PlayerHostConnection>>();
             var factory = Mock.Of<IGameFactory>();
 
-            var bhc = new BattleHostConnection(factory, logger);
+            var bhc = new PlayerHostConnection(factory, logger);
 
-            Assert.Equal(BattleHostConnectionState.Disconnected, bhc.State);
+            Assert.Equal(PlayerHostConnectionState.Disconnected, bhc.State);
             bhc.Connect(stream);
             bhc.Disconnect();
-            Assert.Equal(BattleHostConnectionState.Disconnected, bhc.State);
+            Assert.Equal(PlayerHostConnectionState.Disconnected, bhc.State);
         }
 
         [Fact]
         public void CanStartGame()
         {
             var stream = Mock.Of<IServerStreamWriter<GameRequest>>();
-            var logger = Mock.Of<ILogger<BattleHostConnection>>();
+            var logger = Mock.Of<ILogger<PlayerHostConnection>>();
             var factory = Mock.Of<IGameFactory>();
 
-            var bhc = new BattleHostConnection(factory, logger);
+            var bhc = new PlayerHostConnection(factory, logger);
             Assert.False(bhc.CanStartGame);
             bhc.Connect(stream);
             Assert.True(bhc.CanStartGame);
@@ -60,24 +60,24 @@
         public void StartGame()
         {
             var stream = Mock.Of<IServerStreamWriter<GameRequest>>();
-            var logger = Mock.Of<ILogger<BattleHostConnection>>();
+            var logger = Mock.Of<ILogger<PlayerHostConnection>>();
             var factory = new Mock<IGameFactory>();
             factory.Setup(f => f.Create(It.IsAny<int>(), It.IsAny<int>())).Returns(CreateGame());
 
-            var bhc = new BattleHostConnection(factory.Object, logger);
+            var bhc = new PlayerHostConnection(factory.Object, logger);
             bhc.Connect(stream);
             bhc.StartGame(47, 11);
             factory.Verify(f => f.Create(It.IsAny<int>(), It.IsAny<int>()), Times.Once());
-            Assert.Equal(BattleHostConnectionState.GameRunning, bhc.State);
+            Assert.Equal(PlayerHostConnectionState.GameRunning, bhc.State);
         }
 
         [Fact]
         public async Task Shoot()
         {
             // This test verifies the entire shooting protocol from the 
-            // BattleHostConnection's view.
+            // PlayerHostConnection's view.
 
-            var logger = Mock.Of<ILogger<BattleHostConnection>>();
+            var logger = Mock.Of<ILogger<PlayerHostConnection>>();
 
             var stream = new Mock<IServerStreamWriter<GameRequest>>();
             GameRequest? gameRequest = null;
@@ -89,7 +89,7 @@
             factory.Setup(f => f.Create(It.IsAny<int>(), It.IsAny<int>())).Returns(CreateGame());
 
             // Create connection and start game
-            var bhc = new BattleHostConnection(factory.Object, logger);
+            var bhc = new PlayerHostConnection(factory.Object, logger);
             bhc.Connect(stream.Object);
             bhc.StartGame(47, 11);
             Assert.NotNull(bhc.Game);

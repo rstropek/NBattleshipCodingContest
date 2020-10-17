@@ -19,16 +19,16 @@
     public class GamesController : ControllerBase
     {
         private readonly IEnumerable<PlayerInfo> players;
-        private readonly IBattleHostConnection battleHostConnection;
+        private readonly IPlayerHostConnection playerHostConnection;
 #pragma warning disable IDE0052 // Remove unread private members
         private readonly ILogger<GamesController> logger;
 #pragma warning restore IDE0052 // Remove unread private members
 
-        public GamesController(PlayerInfo[] players, IBattleHostConnection battleHostConnection,
+        public GamesController(PlayerInfo[] players, IPlayerHostConnection playerHostConnection,
             ILogger<GamesController> logger)
         {
             this.players = players;
-            this.battleHostConnection = battleHostConnection;
+            this.playerHostConnection = playerHostConnection;
             this.logger = logger;
         }
 
@@ -59,7 +59,7 @@
                 });
             }
 
-            if (!battleHostConnection.CanStartGame)
+            if (!playerHostConnection.CanStartGame)
             {
                 return BadRequest(new ProblemDetails
                 {
@@ -70,19 +70,19 @@
                 });
             }
 
-            battleHostConnection.StartGame(playerIndexes.Player1Index, playerIndexes.Player2Index);
-            while (battleHostConnection.Game != null && battleHostConnection.Game.GetWinner(BattleshipBoard.Ships) == Winner.NoWinner)
+            playerHostConnection.StartGame(playerIndexes.Player1Index, playerIndexes.Player2Index);
+            while (playerHostConnection.Game != null && playerHostConnection.Game.GetWinner(BattleshipBoard.Ships) == Winner.NoWinner)
             {
-                await battleHostConnection.Shoot(1);
-                await battleHostConnection.Shoot(2);
+                await playerHostConnection.Shoot(1);
+                await playerHostConnection.Shoot(2);
             }
 
-            var game = battleHostConnection.Game!;
+            var game = playerHostConnection.Game!;
             var result = new GameResult(
                 game.Boards[0].ToShortString(),
                 game.Boards[1].ToShortString(),
                 game.GetWinner(BattleshipBoard.Ships),
-                battleHostConnection.Game!.Log);
+                playerHostConnection.Game!.Log);
             return Ok(result);
         }
     }

@@ -1,9 +1,9 @@
-﻿namespace NBattleshipCodingContest.BattleHost
+﻿namespace NBattleshipCodingContest.PlayerHost
 {
     using CommandLine;
 
-    [Verb("battlehost", HelpText = "Starts a battle host process (gRPC client).")]
-    internal class BattleHostOptions
+    [Verb("playerhost", HelpText = "Starts a player host process (gRPC client).")]
+    internal class PlayerHostOptions
     {
         [Option('u', "allow-unencrypted", HelpText = "Allow unencrypted gRPC connections.", Default = true)]
         public bool AllowUnencrypted { get; set; }

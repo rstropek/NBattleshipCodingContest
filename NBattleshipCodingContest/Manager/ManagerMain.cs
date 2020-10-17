@@ -38,7 +38,7 @@
                             services.AddControllers();
                             services.AddSingleton<IGameFactory, GameFactory>();
                             services.AddSingleton<IBoardFiller, RandomBoardFiller>();
-                            services.AddSingleton<IBattleHostConnection, BattleHostConnection>();
+                            services.AddSingleton<IPlayerHostConnection, PlayerHostConnection>();
                         })
                         .Configure((context, app) =>
                         {
@@ -69,14 +69,14 @@
                 .RunAsync();
 
             Process? bhp = null;
-            if (options.StartBattleHost)
+            if (options.StartPlayerHost)
             {
-                bhp = Process.Start("dotnet", "run -- battlehost");
+                bhp = Process.Start("dotnet", "run -- playerhost");
             }
 
             await webTask;
 
-            if (options.StartBattleHost && bhp != null)
+            if (options.StartPlayerHost && bhp != null)
             {
                 bhp.WaitForExit();
             }
