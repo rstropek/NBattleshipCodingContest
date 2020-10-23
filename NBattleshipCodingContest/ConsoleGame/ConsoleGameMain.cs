@@ -31,18 +31,18 @@
             {
                 var p1 = PlayerList.Players[options.Player1Index].Create();
                 var shotRequest = ProtocolTranslator.DecodeShotRequest(ProtocolTranslator.EncodeShotRequest(
-                    new Logic.ShotRequest(game.GameId, options.Player1Index, options.Player2Index,
+                    new Logic.ShotRequest(game.GameId, options.Player1Index, 
                         game.ShootingBoards[0], game.GetLastShot(1))).ShotRequest);
                 p1.LastShot = shotRequest.LastShot;
-                await p1.GetShot(shotRequest.GameId, PlayerList.Players[shotRequest.Shooter].Name, shotRequest.BoardShooterView,
+                await p1.GetShot(shotRequest.GameId, shotRequest.BoardShooterView,
                     location => Task.FromResult(game.Shoot(1, location)));
 
                 var p2 = PlayerList.Players[options.Player2Index].Create();
                 shotRequest = ProtocolTranslator.DecodeShotRequest(ProtocolTranslator.EncodeShotRequest(
-                    new Logic.ShotRequest(game.GameId, options.Player2Index, options.Player1Index,
+                    new Logic.ShotRequest(game.GameId, options.Player2Index, 
                         game.ShootingBoards[1], game.GetLastShot(2))).ShotRequest);
                 p2.LastShot = shotRequest.LastShot;
-                await p2.GetShot(game.GameId, PlayerList.Players[shotRequest.Shooter].Name, shotRequest.BoardShooterView,
+                await p2.GetShot(game.GameId, shotRequest.BoardShooterView,
                     location => Task.FromResult(game.Shoot(2, location)));
             }
 

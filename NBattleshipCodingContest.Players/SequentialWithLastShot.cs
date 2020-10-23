@@ -10,7 +10,7 @@
     public class SequentialWithLastShot : PlayerBase
     {
         /// <inheritdoc />
-        public override async Task GetShot(Guid gameId, string __, IReadOnlyBoard board, Shoot shoot)
+        public override async Task GetShot(Guid gameId, IReadOnlyBoard board, Shoot shoot)
         {
             BoardIndex ix;
             if (LastShot == null)

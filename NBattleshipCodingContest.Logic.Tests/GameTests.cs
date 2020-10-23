@@ -80,7 +80,7 @@
             // Note value-based equality here. See also
             // https://devblogs.microsoft.com/dotnet/welcome-to-c-9-0/#value-based-equality
 
-            Assert.Equal(new ShotRequest(Guid.Empty, 47, 11, game.ShootingBoards[0]), shotRequest);
+            Assert.Equal(new ShotRequest(Guid.Empty, 47, game.ShootingBoards[0]), shotRequest);
         }
 
         [Fact]

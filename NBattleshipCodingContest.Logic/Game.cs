@@ -100,8 +100,7 @@
             EnsureValidShooter(shootingPlayer);
             EnsureValidBoards();
 
-            return new(GameId, PlayerIndexes[shootingPlayer - 1], PlayerIndexes[shootingPlayer % 2], 
-                ShootingBoards[shootingPlayer - 1], GetLastShot(shootingPlayer));
+            return new(GameId, PlayerIndexes[shootingPlayer - 1], ShootingBoards[shootingPlayer - 1], GetLastShot(shootingPlayer));
         }
 
         public BoardIndex? GetLastShot(int player)

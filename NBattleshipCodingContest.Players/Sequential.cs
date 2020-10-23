@@ -10,7 +10,7 @@
     public class Sequential : PlayerBase
     {
         /// <inheritdoc />
-        public override async Task GetShot(Guid _, string __, IReadOnlyBoard board, Shoot shoot)
+        public override async Task GetShot(Guid _, IReadOnlyBoard board, Shoot shoot)
         {
             var ix = new BoardIndex();
 

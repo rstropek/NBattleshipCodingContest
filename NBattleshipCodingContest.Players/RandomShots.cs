@@ -11,7 +11,7 @@
     public class RandomShots : PlayerBase
     {
         /// <inheritdoc />
-        public override async Task GetShot(Guid _, string __, IReadOnlyBoard ___, Shoot shoot)
+        public override async Task GetShot(Guid _, IReadOnlyBoard ___, Shoot shoot)
         {
             // Return a random shot between A1 and J10
             var rand = new Random();

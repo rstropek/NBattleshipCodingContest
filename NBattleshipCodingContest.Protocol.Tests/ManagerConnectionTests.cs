@@ -29,7 +29,7 @@
             public SquareContent? Content { get; private set; }
 
             /// <inheritdoc />
-            public override async Task GetShot(Guid _, string __, IReadOnlyBoard board, Shoot shoot) =>
+            public override async Task GetShot(Guid _, IReadOnlyBoard board, Shoot shoot) =>
                 Content = await shoot(new BoardIndex());
         }
 
@@ -55,7 +55,7 @@
             mc.Connect(stream.Object);
 
             // Simulate incoming ShotRequest
-            mc.Handle(ProtocolTranslator.EncodeShotRequest(new(Guid.Empty, 0, 1, new BoardContent(SquareContent.Unknown))));
+            mc.Handle(ProtocolTranslator.EncodeShotRequest(new(Guid.Empty, 0, new BoardContent(SquareContent.Unknown))));
             Assert.NotNull(playerResponse);
             Assert.Equal(PlayerResponse.PayloadOneofCase.Shot, playerResponse!.PayloadCase);
 

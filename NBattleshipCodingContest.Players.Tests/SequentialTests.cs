@@ -12,7 +12,7 @@ namespace NBattleshipCodingContest.Players.Tests
         {
             var board = new BoardContent(SquareContent.Water);
             var player = new Sequential();
-            Assert.ThrowsAsync<InvalidOperationException>(() => player.GetShot(Guid.Empty, string.Empty, board, _ => Task.FromResult(SquareContent.Water)));
+            Assert.ThrowsAsync<InvalidOperationException>(() => player.GetShot(Guid.Empty, board, _ => Task.FromResult(SquareContent.Water)));
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace NBattleshipCodingContest.Players.Tests
                 return Task.FromResult(SquareContent.Water);
             }
 
-            player.GetShot(Guid.Empty, string.Empty, board, shoot);
+            player.GetShot(Guid.Empty, board, shoot);
             Assert.NotNull(location);
             return location!;
         }

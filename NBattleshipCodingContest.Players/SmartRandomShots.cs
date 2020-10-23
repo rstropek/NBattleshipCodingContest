@@ -14,7 +14,7 @@
     public class SmartRandomShots : PlayerBase
     {
         /// <inheritdoc />
-        public override async Task GetShot(Guid _, string __, IReadOnlyBoard board, Shoot shoot)
+        public override async Task GetShot(Guid _, IReadOnlyBoard board, Shoot shoot)
         {
             var rand = new Random();
             while (true)

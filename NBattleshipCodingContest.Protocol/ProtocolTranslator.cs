@@ -47,14 +47,13 @@
                 {
                     GameId = EncodeGuid(request.GameId),
                     Shooter = request.Shooter,
-                    Opponent = request.Opponent,
                     Board = EncodeBoard(request.BoardShooterView),
                     LastShot = request.LastShot == null ? string.Empty : request.LastShot
                 }
             };
 
         public static Logic.ShotRequest DecodeShotRequest(ShotRequest request) =>
-            new(DecodeGuid(request.GameId), request.Shooter, request.Opponent, EncodeBoard(request.Board), 
+            new(DecodeGuid(request.GameId), request.Shooter, EncodeBoard(request.Board), 
                 string.IsNullOrEmpty(request.LastShot) ? (BoardIndex?)null : new BoardIndex(request.LastShot));
 
         public static GameRequest EncodeShotResult(Logic.ShotResult result) =>
