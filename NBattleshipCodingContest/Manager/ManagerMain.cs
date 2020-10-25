@@ -37,6 +37,7 @@
                             services.AddGrpc();
                             services.AddControllers();
                             services.AddSingleton<IGameFactory, GameFactory>();
+                            services.AddSingleton<ISinglePlayerGameFactory, SinglePlayerGameFactory>();
                             services.AddSingleton<IBoardFiller, RandomBoardFiller>();
                             services.AddSingleton<IPlayerHostConnection, PlayerHostConnection>();
                         })

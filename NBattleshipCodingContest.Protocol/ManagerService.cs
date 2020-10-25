@@ -53,11 +53,7 @@
             try
             {
                 logger.LogInformation("New battle runner connected.");
-                await foreach (var item in requestStream.ReadAllAsync(cts.Token))
-                {
-                    await connection.Handle(item);
-                }
-
+                await connection.HandleRequestsLoop(requestStream, cts.Token);
                 logger.LogInformation("Battle runner exited");
             }
             catch (OperationCanceledException)

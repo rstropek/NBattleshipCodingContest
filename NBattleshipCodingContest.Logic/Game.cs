@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
 
     public enum Winner
@@ -23,9 +22,26 @@
     /// <summary>
     /// Represents the state of a game between two players
     /// </summary>
-    public record Game(Guid GameId, int[] PlayerIndexes, IReadOnlyBoard[] Boards, BoardContent[] ShootingBoards)
+    public class Game
     {
-        private readonly IList<GameLogRecord> log = new List<GameLogRecord>();
+        private readonly SinglePlayerGame[] games;
+
+        public Game(Guid gameId, SinglePlayerGame[] games)
+        {
+            if (games.Length != 2)
+            {
+                throw new ArgumentException("Has to be exactly two games", nameof(games));
+            }
+
+            GameId = gameId;
+            this.games = games;
+        }
+
+        public Guid GameId { get; }
+
+        public IReadOnlyList<IReadOnlyBoard> ShootingBoards => games.Select(g => g.ShootingBoard).ToArray();
+
+        public IReadOnlyList<IReadOnlyBoard> Boards => games.Select(g => g.Board).ToArray();
 
         private static void EnsureValidShooter(int shootingPlayer)
         {
@@ -37,16 +53,37 @@
 
         private void EnsureValidBoards()
         {
-            if (Boards.Length != 2 || ShootingBoards.Length != 2)
+            if (games.Length != 2)
             {
-                throw new InvalidOperationException("Board array(s) of wrong length");
+                throw new InvalidOperationException("Games array(s) of wrong length");
             }
         }
 
         /// <summary>
         /// Gets the history of shots
         /// </summary>
-        public IEnumerable<GameLogRecord> Log => log.ToArray();
+        public IEnumerable<GameLogRecord> Log
+        {
+            get
+            {
+                EnsureValidBoards();
+                var game1Log = games[0].Log.ToArray();
+                var game2Log = games[1].Log.ToArray();
+
+                for (var i = 0; i < Math.Max(game1Log.Length, game2Log.Length); i++)
+                {
+                    if (i < game1Log.Length)
+                    {
+                        yield return new(games[0].PlayerIndex, game1Log[i].Location, game1Log[i].ShotResult);
+                    }
+
+                    if (i < game2Log.Length)
+                    {
+                        yield return new(games[1].PlayerIndex, game2Log[i].Location, game2Log[i].ShotResult);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Given player shoots at a given index
@@ -63,31 +100,7 @@
             EnsureValidShooter(shootingPlayer);
             EnsureValidBoards();
 
-            var board = Boards[shootingPlayer % 2];
-            var shootingBoard = ShootingBoards[shootingPlayer - 1];
-            var content = board[ix];
-            shootingBoard[ix] = content;
-            if (content == SquareContent.Ship)
-            {
-                // We have a hit
-                content = shootingBoard[ix] = SquareContent.HitShip;
-
-                // Check whether the hit sank the ship
-                var shipResult = board.TryFindShip(ix, out var shipRange);
-                if (shipResult == ShipFindingResult.CompleteShip
-                    && shipRange.All(ix => shootingBoard[ix] == SquareContent.HitShip))
-                {
-                    // The hit sank the ship -> change all ship quares to SunkenShip
-                    content = SquareContent.SunkenShip;
-                    foreach(var shipIx in shipRange)
-                    {
-                        shootingBoard[shipIx] = SquareContent.SunkenShip;
-                    }
-                }
-            }
-
-            log.Add(new(PlayerIndexes[shootingPlayer - 1], ix, content));
-            return content;
+            return games[shootingPlayer - 1].Shoot(ix);
         }
 
         /// <summary>
@@ -100,7 +113,7 @@
             EnsureValidShooter(shootingPlayer);
             EnsureValidBoards();
 
-            return new(GameId, PlayerIndexes[shootingPlayer - 1], ShootingBoards[shootingPlayer - 1], GetLastShot(shootingPlayer));
+            return new(GameId, games[shootingPlayer - 1].PlayerIndex, games[shootingPlayer - 1].ShootingBoard, GetLastShot(shootingPlayer));
         }
 
         public BoardIndex? GetLastShot(int player)
@@ -108,7 +121,7 @@
             EnsureValidShooter(player);
             EnsureValidBoards();
 
-            return log.LastOrDefault(l => l.Shooter == PlayerIndexes[player - 1])?.Location;
+            return games[player - 1].LastShot;
         }
 
         /// <summary>
@@ -120,7 +133,7 @@
         public Winner GetWinner(params int[] ships)
         {
             EnsureValidBoards();
-            var lostStates = ShootingBoards.Select(b => b.HasLost(ships)).ToArray();
+            var lostStates = games.Select(g => g.ShootingBoard.HasLost(ships)).ToArray();
 
             // A game is considered a draw if more than 200 moves were made
             if ((lostStates[0] && lostStates[1]) || Log.Count() >= 200)
@@ -167,29 +180,22 @@
     /// </remarks>
     public class GameFactory : IGameFactory
     {
-        private readonly IBoardFiller filler;
+        private readonly ISinglePlayerGameFactory factory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameFactory"/> type.
         /// </summary>
         /// <param name="filler">Filler used to fill the game board.</param>
-        public GameFactory(IBoardFiller filler)
+        public GameFactory(ISinglePlayerGameFactory factory)
         {
-            this.filler = filler;
+            this.factory = factory;
         }
 
         /// <inheritdoc/>
         public Game Create(int player1Index, int player2Index)
         {
-            var boards = new BattleshipBoard[2];
-            for (var i = 0; i < 2; i++)
-            {
-                boards[i] = new BattleshipBoard();
-                filler.Fill(BattleshipBoard.Ships, boards[i]);
-            }
-
-            return new Game(Guid.NewGuid(), new[] { player1Index, player2Index }, boards,
-                new[] { new BoardContent(SquareContent.Unknown), new BoardContent(SquareContent.Unknown) });
+            var gameId = Guid.NewGuid();
+            return new Game(gameId, new[] { factory.Create(gameId, player1Index), factory.Create(gameId, player2Index) });
         }
     }
 }

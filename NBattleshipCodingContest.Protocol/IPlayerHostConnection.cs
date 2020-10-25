@@ -3,6 +3,7 @@
     using Grpc.Core;
     using NBattleshipCodingContest.Logic;
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public enum PlayerHostConnectionState
@@ -39,6 +40,8 @@
         /// Indicates whether the connection is in a state where you can start a new game.
         /// </summary>
         bool CanStartGame { get; }
+
+        Task HandleRequestsLoop(IAsyncStreamReader<PlayerResponse> requestStream, CancellationToken token);
 
         /// <summary>
         /// Start a new game

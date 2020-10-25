@@ -25,7 +25,7 @@
                 logger.Error("Player 2 index is invalid. Must be between 1 and {NumberOfPlayers}", PlayerList.Players.Length - 1);
             }
 
-            var gf = new GameFactory(new RandomBoardFiller());
+            var gf = new GameFactory(new SinglePlayerGameFactory(new RandomBoardFiller()));
             var game = gf.Create(options.Player1Index, options.Player2Index);
             while (game.GetWinner(BattleshipBoard.Ships) == Winner.NoWinner)
             {

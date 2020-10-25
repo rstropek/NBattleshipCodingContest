@@ -52,9 +52,14 @@
             Assert.True(bhc.CanStartGame);
         }
 
-        private static Game CreateGame() =>
-           new Game(Guid.Empty, new[] { 47, 11 }, new[] { new BoardContent(SquareContent.Water), new BoardContent(SquareContent.Water) },
-               new[] { new BoardContent(SquareContent.Unknown), new BoardContent(SquareContent.Unknown) });
+        private static Game CreateGame()
+        {
+            return new Game(Guid.Empty,
+                new[] {
+                    new SinglePlayerGame(Guid.Empty, 47, new BoardContent(SquareContent.Water)),
+                    new SinglePlayerGame(Guid.Empty, 11, new BoardContent(SquareContent.Water))
+                });
+        }
 
         [Fact]
         public void StartGame()
