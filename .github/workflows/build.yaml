@@ -14,36 +14,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
+    - name: 🔧 Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
 
-    - name: Install dependencies
+    - name: 🚚 Install dependencies
       run: dotnet restore
 
-    - name: Build
+    - name: 🚀 Build
       run: dotnet build --configuration Debug --no-restore
 
-    - name: Test
-      run: dotnet test --no-restore --no-build --configuration Debug --logger:"liquid.md;LogFileName=TestReport.md;" --collect:"Code Coverage"
+    - name: 🧪 Test
+      run: dotnet test --no-restore --no-build --configuration Debug --logger:"liquid.md;LogFileName=TestReport.md;"
 
-    - name: Convert code coverage
-      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.5
-      with:
-        reports: ${{github.workspace}}/*.Tests/TestResults/coverage.cobertura.xml
-        targetdir: coveragereport
-
-    - name: Upload test report
+    - name: 💾 Upload test report
       uses: actions/upload-artifact@v2
       if: ${{always()}}
       with:
         name: 'Test Results'
         path: ${{github.workspace}}/*.Tests/TestResults/TestReport.md
-
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v2
-      if: ${{always()}}
-      with:
-        name: 'Test Results'
-        path: ${{github.workspace}}/coveragereport
