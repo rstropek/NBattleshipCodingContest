@@ -7,6 +7,8 @@
     // Note readonly struct here. Read more at
     // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct#readonly-struct
 
+    // Note custom JSON converter for System.Text.Json.
+
     /// <summary>
     /// Index in a battleship board
     /// </summary>
@@ -187,12 +189,14 @@
         /// <exception cref="InvalidOperationException">Already on first square</exception>
         public static BoardIndex operator --(BoardIndex value) => value.Previous();
 
+        // Note target-typed new in the following method implementation
+
         /// <summary>
         /// Converts a given string to a board index.
         /// </summary>
         /// <param name="location">Location string (e.g. A1, B5, J10) consisting of column (A..J) and row (1..10)</param>
         /// <exception cref="ArgumentOutOfRangeException">Given location has invalid format or index is out of range</exception>
-        public static implicit operator BoardIndex(string location) => new BoardIndex(location);
+        public static implicit operator BoardIndex(string location) => new(location);
 
         /// <summary>
         /// Converts a <see cref="BoardIndex"/> into a zero-based board index
@@ -212,6 +216,9 @@
         #endregion
 
         #region IEquatable and object
+
+        // Note type pattern matching in the following method implementation
+
         /// <inheritdoc/>
         public readonly override bool Equals(object? obj) => obj is BoardIndex index && Equals(index);
 
@@ -278,6 +285,8 @@
             newIndex = new BoardIndex();
             return false;
         }
+
+        // Discuss: Longer code vs. inline implementation with expression-bodied members
 
         /// <summary>
         /// Returns a new board index referencing the next square (wraps to next row if necessary)

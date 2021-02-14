@@ -19,6 +19,8 @@
             Assert.Empty(result[4..].Where(c => c != 'W'));
         }
 
+        // Note theory instead of fact
+
         [Theory]
         [InlineData(SquareContent.Water, ShipFindingResult.CompleteShip)]
         [InlineData(SquareContent.Unknown, ShipFindingResult.PartialShip)]

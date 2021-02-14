@@ -91,12 +91,16 @@
         /// <inheritdoc/>
         public int Count => 10 * 10;
 
+        // Note indexer implementation
+
         /// <inheritdoc/>
         public SquareContent this[int location]
         {
             get => this[new BoardIndex(location)];
             set => this[new BoardIndex(location)] = value;
         }
+
+        // Note enumerator block
 
         /// <inheritdoc/>
         public IEnumerator<SquareContent> GetEnumerator()

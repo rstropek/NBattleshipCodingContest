@@ -1,24 +1,7 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 
 namespace NBattleshipCodingContest.Logic
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum SquareContent : byte
-    {
-        Water,
-        Ship,
-        HitShip,
-        SunkenShip,
-        Unknown
-    }
-
-    public enum Direction : byte
-    {
-        Horizontal,
-        Vertical
-    }
-
     // Note the use of records here. Read more at
     // https://devblogs.microsoft.com/dotnet/welcome-to-c-9-0/#records
 

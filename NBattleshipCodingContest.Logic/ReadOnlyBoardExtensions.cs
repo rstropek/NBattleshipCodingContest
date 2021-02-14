@@ -9,6 +9,8 @@
         PartialShip
     }
 
+    // Note extension methods on interface
+
     public static class ReadOnlyBoardExtensions
     {
         /// <summary>
@@ -50,12 +52,16 @@
         /// </returns>
         public static ShipFindingResult TryFindShip(this IReadOnlyBoard board, BoardIndex ix, out BoardIndexRange shipRange)
         {
+            // Note pattern matching
+
             if (board[ix] is not SquareContent.HitShip and not SquareContent.Ship)
             {
                 // No ship at specified index
                 shipRange = new BoardIndexRange();
                 return ShipFindingResult.NoShip;
             }
+
+            // Note local method returning tuple
 
             (BoardIndex ix, bool complete) FindShipEdge(BoardIndex current, Direction direction, bool prev)
             {
@@ -87,6 +93,8 @@
                 return (direction == Direction.Horizontal ? current.NextColumn() : current.NextRow(), complete);
             }
 
+            // Note local method receiving tuple
+
             bool TryDirection(Direction direction, out (BoardIndexRange range, ShipFindingResult complete) result)
             {
                 var (beginningIx, beginningComplete) = FindShipEdge(ix, direction, true);
@@ -102,6 +110,8 @@
                 shipRange = resultHorizontal.range;
                 return resultHorizontal.complete;
             }
+
+            // Note discard operator to indicate that result is not relevant
 
             _ = TryDirection(Direction.Vertical, out var resultVertical);
             shipRange = resultVertical.range;

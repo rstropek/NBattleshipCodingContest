@@ -3,6 +3,8 @@
     using System;
     using Xunit;
 
+    // Note how expression-bodied members can increase readability
+
     public class BoardIndexTests
     {
         [Fact] public void SingleIndex_Invalid() => Assert.Throws<ArgumentOutOfRangeException>("index", () => new BoardIndex(100));

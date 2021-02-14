@@ -75,6 +75,8 @@
         /// </summary>
         public readonly BoardIndex To => to;
 
+        // Discuss: C# deconstructors. Read more at https://docs.microsoft.com/en-us/dotnet/csharp/deconstruct
+
         /// <summary>
         /// Deconstructs the instance
         /// </summary>

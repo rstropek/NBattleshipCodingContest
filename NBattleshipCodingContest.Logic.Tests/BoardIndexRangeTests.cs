@@ -74,6 +74,5 @@
             Assert.Equal("B1", ixs[1]);
             Assert.Equal("C1", ixs[2]);
         }
-
     }
 }

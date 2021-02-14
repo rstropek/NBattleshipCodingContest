@@ -53,8 +53,6 @@ namespace NBattleshipCodingContest.Logic.Tests
 
         [Fact]
         public void CanPlaceShip_Overlap()
-        {
-            Assert.False(CanPlaceShip(new BoardIndex(3, 2), 3, Direction.Vertical, (c, r) => !(r == 3 && c is >= 3 and <= 7)));
-        }
+            => Assert.False(CanPlaceShip(new BoardIndex(3, 2), 3, Direction.Vertical, (c, r) => !(r == 3 && c is >= 3 and <= 7)));
     }
 }

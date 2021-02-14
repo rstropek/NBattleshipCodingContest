@@ -1,6 +1,5 @@
 ﻿namespace NBattleshipCodingContest.Logic
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>

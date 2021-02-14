@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
 
     public enum Winner
@@ -13,12 +12,15 @@
         Player2 = 2
     }
 
-    public record GameLogRecord(int Shooter, BoardIndex Location, SquareContent ShotResult, string? ShooterName = null);
-
     // Note use of records here. Read more at
     // https://devblogs.microsoft.com/dotnet/welcome-to-c-9-0/#records
 
     // Note limitations regarding XML documentation of records.
+
+    /// <summary>
+    /// Represents a record in the game log.
+    /// </summary>
+    public record GameLogRecord(int Shooter, BoardIndex Location, SquareContent ShotResult, string? ShooterName = null);
 
     /// <summary>
     /// Represents the state of a game between two players

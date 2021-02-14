@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="IBoardFiller can fill an IFillableBoard">
+    <Position X="6.917" Y="0.844" Height="0.406" Width="2.252" />
+  </Comment>
+  <Class Name="NBattleshipCodingContest.Logic.BattleshipBoard">
+    <Position X="5.25" Y="3" Width="2.75" />
+    <NestedTypes>
+      <Delegate Name="NBattleshipCodingContest.Logic.BattleshipBoard.IsWater" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>BattleshipBoard.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAwAAEAAAAAAAAAAAAAAAAIAAAAgAAAA=</HashCode>
+      <FileName>BattleshipBoard.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NBattleshipCodingContest.Logic.BoardContent">
+    <Position X="2.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAECAAAAAQQAAgAAAAEAAAAAABAAAA=</HashCode>
+      <FileName>BoardContent.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NBattleshipCodingContest.Logic.RandomBoardFiller">
+    <Position X="9.5" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RandomBoardFiller.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="NBattleshipCodingContest.Logic.IFillableBoard">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>RandomBoardFiller.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="NBattleshipCodingContest.Logic.IReadOnlyBoard">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IReadOnlyBoard.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="NBattleshipCodingContest.Logic.IBoardFiller">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RandomBoardFiller.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
