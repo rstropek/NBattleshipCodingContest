@@ -12,6 +12,7 @@
             board["A1"] = SquareContent.Water;
             board["B1"] = SquareContent.Ship;
             board["C1"] = SquareContent.HitShip;
+            board["D1"] = SquareContent.SunkenShip;
             return board;
         }
 
@@ -21,14 +22,14 @@
             var serializeOptions = new JsonSerializerOptions();
             serializeOptions.Converters.Add(new BoardContentJsonConverter());
             var jsonString = JsonSerializer.Serialize(CreateBoard(), serializeOptions);
-            Assert.Equal("\"WSH".PadRight(101, ' ') + "\"", jsonString);
+            Assert.Equal("\"WSHX".PadRight(101, ' ') + "\"", jsonString);
         }
 
         [Fact]
         public void SerializeDefaultOptions()
         {
             var jsonString = JsonSerializer.Serialize(CreateBoard());
-            Assert.Equal("\"WSH".PadRight(101, ' ') + "\"", jsonString);
+            Assert.Equal("\"WSHX".PadRight(101, ' ') + "\"", jsonString);
         }
 
         [Fact]
@@ -36,14 +37,14 @@
         {
             var serializeOptions = new JsonSerializerOptions();
             serializeOptions.Converters.Add(new BoardContentJsonConverter());
-            var content = JsonSerializer.Deserialize<BoardContent>("\"WSH".PadRight(101, ' ') + "\"", serializeOptions);
+            var content = JsonSerializer.Deserialize<BoardContent>("\"WSHX".PadRight(101, ' ') + "\"", serializeOptions);
             Assert.Equal(CreateBoard().ToString(), content!.ToString());
         }
 
         [Fact]
         public void DeserializeDefaultOptions()
         {
-            var content = JsonSerializer.Deserialize<BoardContent>("\"WSH".PadRight(101, ' ') + "\"");
+            var content = JsonSerializer.Deserialize<BoardContent>("\"WSHX".PadRight(101, ' ') + "\"");
             Assert.Equal(CreateBoard().ToString(), content!.ToString());
         }
 
@@ -53,7 +54,7 @@
 
         [Fact]
         public void DeserializeShort() => 
-            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<BoardContent>("\"WSH\""));
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<BoardContent>("\"WSHX\""));
 
         [Fact]
         public void DeserializeIllegalChars() =>

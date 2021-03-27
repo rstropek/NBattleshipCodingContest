@@ -24,7 +24,7 @@
                 throw new JsonException("Board content has invalid length, must be exactly 100 chars");
             }
 
-            if (stringValue.Any(c => c is not 'W' and not 'S' and not 'H' and not ' '))
+            if (stringValue.Any(c => c is not 'W' and not 'S' and not 'H' and not ' ' and not 'X'))
             {
                 throw new JsonException("Board content contains invalid characters");
             }
@@ -37,6 +37,7 @@
                     'W' => SquareContent.Water,
                     'S' => SquareContent.Ship,
                     'H' => SquareContent.HitShip,
+                    'X' => SquareContent.SunkenShip,
                     ' ' => SquareContent.Unknown,
                     _ => throw new InvalidOperationException("Invalid square content, should never happen!")
                 };
