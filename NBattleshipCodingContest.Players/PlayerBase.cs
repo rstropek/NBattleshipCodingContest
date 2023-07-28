@@ -30,7 +30,7 @@
         /// Gets the next shot from the player.
         /// </summary>
         /// <param name="gameId">Unique identifier of the current game</param>
-        /// <param name="opponent">identifier of the opponent</param>
+        /// <param name="opponentId">identifier of the opponent</param>
         /// <param name="board">Current board content</param>
         /// <param name="shoot">Callback with which the method has to do the shooting</param>
         /// <remarks>
