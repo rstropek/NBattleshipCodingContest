@@ -79,7 +79,7 @@
                 if (shipResult == ShipFindingResult.CompleteShip
                     && shipRange.All(ix => shootingBoard[ix] == SquareContent.HitShip))
                 {
-                    // The hit sank the ship -> change all ship quares to SunkenShip
+                    // The hit sank the ship -> change all ship squares to SunkenShip
                     content = SquareContent.SunkenShip;
                     foreach(var shipIx in shipRange)
                     {

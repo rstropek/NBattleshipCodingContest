@@ -18,7 +18,7 @@
         /// </summary>
         /// <param name="board">Board to convert</param>
         /// <returns>
-        /// String in which each letter represents one board sqare.
+        /// String in which each letter represents one board square.
         /// </returns>
         public static string ToShortString(this IReadOnlyBoard board) =>
             string.Create(100, board, (buf, content) =>

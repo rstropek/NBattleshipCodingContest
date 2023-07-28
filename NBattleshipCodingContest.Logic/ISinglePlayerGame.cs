@@ -6,7 +6,7 @@
     // NOTE that this interface is for future use. Currently not part of the project.
 
     /// <summary>
-    /// Represens a log entry in a single-player game' log
+    /// Represents a log entry in a single-player game' log
     /// </summary>
     public record SinglePlayerGameLogRecord(BoardIndex Location, SquareContent ShotResult);
 
@@ -36,7 +36,7 @@
         /// Gets the board with ships on it
         /// </summary>
         /// <remarks>
-        /// The computer player has to shink those ships. Does not contain <see cref="SquareContent.Unknown"/>
+        /// The computer player has to sink those ships. Does not contain <see cref="SquareContent.Unknown"/>
         /// squares.
         /// </remarks>
         IReadOnlyBoard Board { get; }

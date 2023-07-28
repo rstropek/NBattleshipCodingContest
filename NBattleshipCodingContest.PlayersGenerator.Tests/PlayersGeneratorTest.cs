@@ -90,7 +90,7 @@ namespace NBattleshipCodingContest.Players
             var (tree, _) = Compile(Code);
             var receiver = FillReceiver(tree);
 
-            // Check that syntax receiver recogniced candidate classes (i.e. classes
+            // Check that syntax receiver recognized candidate classes (i.e. classes
             // with at least one base class).
             Assert.Equal(4, receiver.CandidateClasses.Count);
         }
