@@ -27,7 +27,7 @@
         {
             var result = (SquareContent)content;
 
-            // Check enum value in debug build. Read more about assertation in C#
+            // Check enum value in debug build. Read more about assertion in C#
             // https://docs.microsoft.com/en-us/visualstudio/debugger/assertions-in-managed-code
             Debug.Assert(Enum.IsDefined(typeof(Logic.SquareContent), content));
             Debug.Assert(Enum.IsDefined(typeof(SquareContent), result));

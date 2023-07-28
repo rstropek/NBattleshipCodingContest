@@ -3,7 +3,7 @@
     using Moq;
     using Xunit;
 
-    public class RandomBoardFillterTests
+    public class RandomBoardFillerTests
     {
         [Fact]
         public void Fill()

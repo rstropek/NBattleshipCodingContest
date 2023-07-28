@@ -65,7 +65,7 @@
         /// <param name="ix">Coordinates where the ship should be placed</param>
         /// <param name="shipLength">Length of the ship (max. 10)</param>
         /// <param name="direction">Direction of the ship</param>
-        /// <param name="isWater">Callback to find out if a given suqare is water before placing the ship</param>
+        /// <param name="isWater">Callback to find out if a given square is water before placing the ship</param>
         /// <returns>
         /// <c>true</c> if the ship can be placed here, otherwise <c>false</c>.
         /// </returns>

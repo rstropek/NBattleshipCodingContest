@@ -40,7 +40,7 @@
         /// <inheritdoc/>
         public void Initialize(GeneratorInitializationContext context) =>
             // We do the work in a helper functions because we want to be able to verify that
-            // a syntax receiver is registeres. However, our mocking framework Moq does not support
+            // a syntax receiver is registered. However, our mocking framework Moq does not support
             // creating mock objects for structs like this (at least I don't know how to do it).
             InitializeImpl(context.RegisterForSyntaxNotifications);
 
@@ -73,7 +73,7 @@ namespace NBattleshipCodingContest.Players
         {
 ");
 
-            // Mandator base class for players
+            // Mandatory base class for players
             var playerBaseSymbol = compilation.GetTypeByMetadataName("NBattleshipCodingContest.Players.PlayerBase");
             if (playerBaseSymbol == null)
             {

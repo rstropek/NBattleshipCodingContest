@@ -17,7 +17,7 @@
             // Find next unknown square
             while (board[ix] != SquareContent.Unknown) ix = ix.Next();
 
-            // Shoot at first unknonwn square
+            // Shoot at first unknown square
             await shoot(ix);
         }
     }

@@ -27,7 +27,7 @@
             // This is a private method, so we can assume that col and row
             // contain valid values. We check them only in debug builds.
 
-            // Read more about assertation in C#
+            // Read more about assertion in C#
             // https://docs.microsoft.com/en-us/visualstudio/debugger/assertions-in-managed-code
             Debug.Assert(col is >= 0 and <= 9 && row is >= 0 and <= 9);
 
